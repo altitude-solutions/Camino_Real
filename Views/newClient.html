@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Nuevo Cliente</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/newClient.css">
+
+</head>
+
+<body>
+
+    <div class="container p-3">
+        <div class="row">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Código y nombre del cliente</span>
+                </div>
+                <input type="number" min="0" placeholder="Código" aria-label="First name" class="form-control">
+                <input type="text" placeholder="Nombre" aria-label="Last name" class="form-control">
+            </div>
+        </div>
+
+        <div class="row d-flex justify-content-end mt-2 pb-2 pr-2">
+            <button class="btn btn-dark mr-2">Cancelar</button>
+            <button class="btn btn-dark">Crear</button>
+        </div>
+    </div>
+
+    <script>
+        window.$ = window.jQuery = require('jquery');
+        window.Bootstrap = require('bootstrap');
+    </script>
+</body>
+
+</html>

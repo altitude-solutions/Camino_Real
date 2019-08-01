@@ -1,0 +1,64 @@
+{
+    "name": "hotel",
+    "version": "0.0.1",
+    "description": "POC",
+    "main": "main.js",
+    "scripts": {
+        "test": "nodemon --exec 'electron .'",
+        "start": "electron .",
+        "build": "electron-builder -wl"
+    },
+    "build": {
+        "appId": "https://github.com/altitude-solutions/HotelCaminoReal.git",
+        "icon": "Resources/Icon.png",
+        "directories": {
+            "buildResources": "Resources/"
+        },
+        "win": {
+            "target": {
+                "target": "nsis",
+                "arch": [
+                    "x64",
+                    "ia32"
+                ]
+            }
+        },
+        "linux": {
+            "category": "Office",
+            "target": {
+                "target": "deb",
+                "arch": [
+                    "x64",
+                    "ia32"
+                ]
+            }
+        }
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/altitude-solutions/HotelCaminoReal.git"
+    },
+    "keywords": [
+        "hotel",
+        "poc"
+    ],
+    "author": {
+        "email": "javierconts3@live.com",
+        "name": "Javier Contreras"
+    },
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/altitude-solutions/HotelCaminoReal/issues"
+    },
+    "homepage": "https://github.com/altitude-solutions/HotelCaminoReal#readme",
+    "dependencies": {
+        "bootstrap": "^4.3.1",
+        "electron-window-state": "^5.0.3",
+        "excel4node": "^1.7.2",
+        "jquery": "^3.4.1",
+        "popper.js": "^1.15.0"
+    },
+    "devDependencies": {
+        "electron": "^6.0.0"
+    }
+}
