@@ -1,7 +1,7 @@
 // ===============================================
 // Imports
 // ===============================================
-const { ipcRenderer, remote } = require('electron');
+const { ipcRenderer } = require('electron');
 
 // ===============================================
 // Localstorage as local database
@@ -42,5 +42,8 @@ ipcRenderer.on('generate-fail', (e, err) => {
 // Create new clients for autocompleting
 // ===============================================
 window.createNewClient = () => {
-    ipcRenderer.send('new-client');
+    // ===============================================
+    // Show New Client Modal
+    // ===============================================
+    document.getElementById('newClientModalButton').click();
 }

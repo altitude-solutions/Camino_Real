@@ -12,10 +12,12 @@
 
 <body>
 
-    <div class="container mt-4 mb-4">
+    <div class="container-fluid mt-4 mb-4">
         <div class="row">
-            <div class="col">
 
+            <!-- Left side -->
+            <div class="col">
+                <!-- Date input -->
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="saleDate">Fecha</span>
@@ -23,6 +25,7 @@
                     <input id="datePicker" type="date" class="form-control" placeholder="Fecha" aria-label="Fecha" aria-describedby="saleDate">
                 </div>
 
+                <!-- Seller name -->
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="sellerID">Vendedor</span>
@@ -30,24 +33,7 @@
                     <input id="seller" type="text" class="form-control" placeholder="Vendedor" aria-label="Vendedor" aria-describedby="sellerID">
                 </div>
 
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="clientID">Cliente</span>
-                    </div>
-                    <input id="client" type="text" class="form-control" placeholder="Cliente" aria-label="Cliente" aria-describedby="clientID">
-                </div>
-
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text" for="contactType">Tipo de contacto</label>
-                    </div>
-                    <select class="custom-select" id="contactType">
-                        <option value="0" selected>Seleccionar...</option>
-                        <option value="1">Llamada</option>
-                        <option value="2">Visita</option>
-                    </select>
-                </div>
-
+                <!-- is first contact -->
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <label class="input-group-text" for="contactTime">Primer contacto</label>
@@ -59,31 +45,56 @@
                     </select>
                 </div>
 
-                <div class="input-group mb-3">
+
+                <!-- Client id and name -->
+                <div id="clientInputGroup" class="hiddenInputGroup input-group mb-3">
                     <div class="input-group-prepend">
-                        <label class="input-group-text" for="clientStatus">¿Es cliente?</label>
+                        <span class="input-group-text" id="clientID">Cliente</span>
                     </div>
-                    <select class="custom-select" id="clientStatus">
+                    <input id="client" type="text" class="form-control" placeholder="Cliente" aria-label="Cliente" list="clientSuggestionList" aria-describedby="clientID">
+                    <datalist id="clientSuggestionList"></datalist>
+                </div>
+
+                <!-- contact type -->
+                <div id="contactTypeInputGroup" class="hiddenInputGroup input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="contactType">Tipo de contacto</label>
+                    </div>
+                    <select class="custom-select" id="contactType">
+                        <option value="0" selected>Seleccionar...</option>
+                        <option value="1">Llamada</option>
+                        <option value="2">Visita</option>
+                    </select>
+                </div>
+
+                <!-- is client -->
+                <div id="activeClientInputGroup" class="hiddenInputGroup input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="clientStatus">Cliente Activo</label>
+                    </div>
+                    <select class="custom-select" id="hiddenInputGroup clientStatus">
                         <option value="0" selected>Seleccionar...</option>
                         <option value="1">Si</option>
                         <option value="2">No</option>
                     </select>
                 </div>
 
-                <div class="input-group mb-3">
+                <!-- dis he/she answer -->
+                <div id="responseInputGroup" class="hiddenInputGroup input-group mb-3">
                     <div class="input-group-prepend">
-                        <label class="input-group-text" for="answerStatus">¿Contesta?</label>
+                        <label class="input-group-text" for="answerStatus">Respuesta</label>
                     </div>
                     <select class="custom-select" id="answerStatus">
                         <option value="0" selected>Seleccionar...</option>
                         <option value="1">Si</option>
-                        <option value="2">No</option>
+                        <option value="2">Sin respuesta</option>
                     </select>
                 </div>
 
-                <div class="input-group mb-3">
+                <!-- is lead -->
+                <div id="leadInputGroup" class="hiddenInputGroup input-group mb-3">
                     <div class="input-group-prepend">
-                        <label class="input-group-text" for="isLead">¿Es LEAD?</label>
+                        <label class="input-group-text" for="isLead">LEAD</label>
                     </div>
                     <select class="custom-select" id="isLead">
                         <option value="0" selected>Seleccionar...</option>
@@ -94,9 +105,14 @@
 
 
             </div>
+            <!-- Left side end -->
+            <!-- Right side -->
             <div class="col">
                 <div class="side">
+                    <!-- canvas to draw something -->
                     <canvas class="graph" id="diagram" height="200"></canvas>
+
+                    <!-- extra contact info -->
                     <div class="input-group extra-info">
                         <div class="input-group-prepend">
                             <span class="input-group-text">Comentarios</span>
@@ -104,19 +120,60 @@
                         <textarea id="extraInfo" class="form-control" aria-label="With textarea" rows="6" placeholder="Sin información adicional"></textarea>
                     </div>
 
+                    <!-- clear and submit button -->
                     <button id="clearButton" class="btn btn-dark boton-limpiar">Limpiar</button>
                     <button id="saveButton" class="btn btn-dark boton-guardar">Guardar</button>
+                </div>
+            </div>
+            <!-- Right side end -->
+            <!-- body end -->
+
+        </div>
+    </div>
+
+
+
+
+    <!-- Create new user Modal View -->
+    <button id="newClientModalButton" type="button" class="btn btn-primary" style="visibility: hidden;float: left;" data-toggle="modal" data-target="#exampleModalCenter">
+    </button>
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Nuevo Cliente</h5>
+                </div>
+                <div class="modal-body">
+
+
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Código y Nombre</span>
+                        </div>
+                        <input id="modalClientID" type="number" aria-label="First name" min="0" max="9999" placeholder="Código" class="form-control">
+                        <input id="modalClientName" type="text" aria-label="Last name" placeholder="Nombre" class="form-control">
+                    </div>
+
+
+
+                </div>
+                <div class="modal-footer ">
+                    <button id="modalCancelButton" type="button" class="btn btn-dark" data-dismiss="modal">Cancelar</button>
+                    <button id="modalAcceptButton" type="button" class="btn btn-dark">Aceptar</button>
                 </div>
             </div>
         </div>
     </div>
 
+
+
+
     <script>
         window.$ = window.jQuery = require('jquery');
         window.Bootstrap = require('bootstrap');
     </script>
-    <script src="./renderer.js"></script>
-    <script src="./Menu.js"></script>
+    <script src="./renderer.js "></script>
+    <script src="./Menu.js "></script>
 </body>
 
 </html>

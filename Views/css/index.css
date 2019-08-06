@@ -23,3 +23,10 @@ body {
 .boton-guardar {
     grid-area: submit
 }
+
+
+/* hidden input fields */
+
+.hiddenInputGroup {
+    visibility: hidden;
+}

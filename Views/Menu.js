@@ -16,12 +16,6 @@ let menuTemplate = [{
         ]
     },
     {
-        label: 'Ventana',
-        submenu: [
-            { role: 'toggleFullScreen' }
-        ]
-    },
-    {
         label: 'Borrar',
         click: () => {
             localStorage.removeItem('contacts');

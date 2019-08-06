@@ -1,20 +1,27 @@
 {
     "name": "hotel",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "POC",
     "main": "main.js",
     "scripts": {
         "test": "nodemon --exec 'electron .'",
         "start": "electron .",
-        "build": "electron-builder -wl"
+        "build": "electron-builder -mwl",
+        "mac": "electron-builder -m",
+        "win": "electron-builder -w",
+        "linux": "electron-builder -l",
+        "make-cert": "electron-builder create-self-signed-cert -p Altitude-Solutions"
     },
     "build": {
-        "appId": "https://github.com/altitude-solutions/HotelCaminoReal.git",
-        "icon": "Resources/Icon.png",
+        "appId": "altitude-solutions.HotelCaminoReal",
         "directories": {
-            "buildResources": "Resources/"
+            "buildResources": "./build/"
         },
         "win": {
+            "publish": [
+                "github"
+            ],
+            "icon": "build/icons/Icon.png",
             "target": {
                 "target": "nsis",
                 "arch": [
@@ -24,14 +31,26 @@
             }
         },
         "linux": {
+            "publish": [
+                "github"
+            ],
+            "icon": "build/icons/Icon.png",
             "category": "Office",
             "target": {
-                "target": "deb",
+                "target": "AppImage",
                 "arch": [
                     "x64",
                     "ia32"
                 ]
             }
+        },
+        "mac": {
+            "publish": [
+                "github"
+            ],
+            "icon": "build/icons/Icon.png",
+            "category": "public.app-category.productivity",
+            "target": "zip"
         }
     },
     "repository": {
@@ -53,12 +72,14 @@
     "homepage": "https://github.com/altitude-solutions/HotelCaminoReal#readme",
     "dependencies": {
         "bootstrap": "^4.3.1",
+        "electron-updater": "^4.1.2",
         "electron-window-state": "^5.0.3",
         "excel4node": "^1.7.2",
         "jquery": "^3.4.1",
         "popper.js": "^1.15.0"
     },
     "devDependencies": {
-        "electron": "^6.0.0"
+        "electron": "^6.0.0",
+        "electron-builder": "^21.2.0"
     }
 }
