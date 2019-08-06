@@ -1,6 +1,6 @@
 {
     "name": "hotel",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "POC",
     "main": "main.js",
     "scripts": {
@@ -28,7 +28,11 @@
                     "x64",
                     "ia32"
                 ]
-            }
+            },
+            "certificateFile": "private/signing/certuno.pfx",
+            "certificatePassword": "Altitude",
+            "publisherName": "Altitude Solutions S.R.L.",
+            "verifyUpdateCodeSignature": false
         },
         "linux": {
             "publish": [
