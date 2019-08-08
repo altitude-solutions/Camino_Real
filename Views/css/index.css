@@ -2,31 +2,6 @@ body {
     user-select: none;
 }
 
-.side {
-    display: grid;
-    grid-gap: 1em;
-    grid-template-areas: "graph graph graph" "extra extra extra" "none clear submit"
-}
-
-.graph {
-    grid-area: graph
-}
-
-.extra-info {
-    grid-area: extra
-}
-
-.boton-limpiar {
-    grid-area: clear
-}
-
-.boton-guardar {
-    grid-area: submit
-}
-
-
-/* hidden input fields */
-
-.hiddenInputGroup {
-    visibility: hidden;
+[type="date"]::-webkit-inner-spin-button {
+    display: none;
 }

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const windowState = require('electron-window-state');
 const path = require('path');
 
@@ -17,8 +17,8 @@ let mainWindow;
 
 function createWindow() {
     let state = windowState({
-        defaultWidth: 775,
-        defaultHeight: 510
+        defaultWidth: 1920,
+        defaultHeight: 1080
     });
 
     mainWindow = new BrowserWindow({
@@ -26,8 +26,8 @@ function createWindow() {
         y: state.y,
         width: state.width,
         height: state.height,
-        minWidth: 775,
-        minHeight: 520,
+        minWidth: 1280,
+        minHeight: 720,
         webPreferences: {
             nodeIntegration: true
         },
@@ -58,8 +58,11 @@ app.on('ready', () => {
 
     // ===============================================
     // Check for updates after 2 seconds from app ready event
+    // NOTE: Only if it is on production enviroment
     // ===============================================
-    // setTimeout(updater.check, 2000);
+    if (process.env.ENVIROMENT !== 'dev') {
+        setTimeout(updater.check, 2000);
+    }
 });
 
 app.on('window-all-closed', () => {
@@ -154,4 +157,24 @@ ipcMain.on('generaReport', (e, filecontent) => {
     } else {
         e.sender.send('generate-fail', 'No hay registros para guardar');
     }
+});
+
+// ===============================================
+// Load client list from and excel file
+// ===============================================
+ipcMain.on('loadClientList', (e) => {
+    // ===============================================
+    // Select file
+    // ===============================================
+    dialog.showOpenDialog(mainWindow, {
+        properties: ['openFile'],
+        title: 'Importar clientes',
+        defaultPath: app.getPath('documents'),
+        filters: [
+            { name: 'Excel', extensions: ['xlsx', 'xls'] },
+            { name: 'Todos los archivos', extensions: ['*'] }
+        ]
+    }, (res) => {
+        console.log(res[0]); // show path to file
+    });
 });

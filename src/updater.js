@@ -11,11 +11,22 @@ autoUpdater.autoDownload = false;
 // Check for updates
 // ===============================================
 exports.check = () => {
+
+    // ===============================================
+    // Check for updates
+    // ===============================================
     autoUpdater.checkForUpdates();
 
+
+    // ===============================================
+    // If an update is available notify
+    // ===============================================
     autoUpdater.on('update-available', () => {
         let downloadProgress = 0;
 
+        // ===============================================
+        // Ask if update or not
+        // ===============================================
         dialog.showMessageBox({
             type: 'info',
             title: 'Actualización Disponible',
@@ -24,11 +35,17 @@ exports.check = () => {
         }, (buttonIndex) => {
             if (buttonIndex !== 0) return;
 
+            // ===============================================
+            // If 'Actualizar' is clicked start download
+            // ===============================================
             autoUpdater.downloadUpdate();
 
+            // ===============================================
+            // Create a windows to show downloading progress
+            // ===============================================
             let progressWin = new BrowserWindow({
                 width: 350,
-                height: 35,
+                height: 80,
                 useContentSize: true,
                 autoHideMenuBar: true,
                 minimizable: false,
@@ -50,6 +67,9 @@ exports.check = () => {
                 downloadProgress = d.percent;
             });
 
+            // ===============================================
+            // When download is finished ask whether to install now or later
+            // ===============================================
             autoUpdater.on('update-downloaded', () => {
                 if (progressWin) progressWin.close();
 
@@ -59,6 +79,9 @@ exports.check = () => {
                     message: 'Una nueva versión esta lista.\n¿Salir e instalar?',
                     buttons: ['Si', 'Más tarde']
                 }, (i) => {
+                    // ===============================================
+                    // If 'Now' is clicked quit and install
+                    // ===============================================
                     if (i === 0) autoUpdater.quitAndInstall();
                 });
             });

@@ -1,18 +1,26 @@
 {
     "name": "hotel",
-    "version": "1.0.1",
-    "description": "POC",
+    "version": "0.9.1",
+    "description": "Altitude-Solutions",
     "main": "main.js",
     "scripts": {
-        "test": "nodemon --exec 'electron .'",
-        "start": "electron .",
-        "build": "electron-builder -mwl",
+        "test": "ENVIROMENT=dev nodemon --exec 'electron .'",
+        "start": "ENVIROMENT=dev electron .",
+        "build": "electron-builder -wl",
         "mac": "electron-builder -m",
         "win": "electron-builder -w",
         "linux": "electron-builder -l",
-        "make-cert": "electron-builder create-self-signed-cert -p Altitude-Solutions"
+        "make-cert": "electron-builder create-self-signed-cert -p Altitude-Solutions",
+        "publish": "electron-builder -wl -p 'onTagOrDraft'"
     },
     "build": {
+        "nsis": {
+            "oneClick": false,
+            "allowElevation": true,
+            "allowToChangeInstallationDirectory": true,
+            "createDesktopShortcut": true,
+            "createStartMenuShortcut": true
+        },
         "appId": "altitude-solutions.HotelCaminoReal",
         "directories": {
             "buildResources": "./build/"
@@ -32,7 +40,8 @@
             "certificateFile": "private/signing/certuno.pfx",
             "certificatePassword": "Altitude",
             "publisherName": "Altitude Solutions S.R.L.",
-            "verifyUpdateCodeSignature": false
+            "verifyUpdateCodeSignature": false,
+            "requestedExecutionLevel": "requireAdministrator"
         },
         "linux": {
             "publish": [
@@ -67,7 +76,7 @@
     ],
     "author": {
         "email": "javierconts3@live.com",
-        "name": "Javier Contreras"
+        "name": "Altitude Solutions S.R.L."
     },
     "license": "ISC",
     "bugs": {

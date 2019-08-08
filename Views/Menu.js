@@ -1,4 +1,4 @@
-const { remote } = require('electron');
+const { remote, ipcRenderer } = require('electron');
 
 
 let menuTemplate = [{
@@ -12,13 +12,26 @@ let menuTemplate = [{
                 label: "Generar Excel",
                 click: window.generateReport,
                 accelerator: 'CmdOrCtrl+G'
+            },
+            {
+                type: 'separator'
+            },
+            {
+                label: 'Importar clientes',
+                click: () => {
+                    ipcRenderer.send('loadClientList');
+                }
             }
         ]
     },
     {
+        // ===============================================
+        // TODO: Eliminar esta opcion, solo mantener en desarrollo
+        // ===============================================
         label: 'Borrar',
         click: () => {
             localStorage.removeItem('contacts');
+            localStorage.removeItem('clients');
         }
     }
 ];

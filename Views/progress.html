@@ -28,7 +28,6 @@
             let progress = ipcRenderer.sendSync('download-progress-request');
             document.getElementById('progressId').style = `width: ${progress}%;`;
             document.getElementById('progressId').innerText = `${progress}%`;
-            progress++;
         }, 1000);
     </script>
 </body>
