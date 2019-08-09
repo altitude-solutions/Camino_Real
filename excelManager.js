@@ -24,6 +24,7 @@ ipcMain.on('generateReport', (e, filecontent) => {
     // ===============================================
     let listaActivo = ['', 'Si', 'No'];
     let lsitaMotivo = ['', 'Primer contacto', 'Seguimiento específico', 'Seguimiento a tarifario entregado', 'Seguimiento a propuesta entragada', 'LEAD', 'Contactado por cliente'];
+    let listaTipoContacto = ['', 'Llamada', 'Visita'];
     let listaContesta = ['', 'Si', 'No'];
     let listaRespuesta = ['', 'Tarifario', 'Primera propuesta', 'Nueva propuesta', 'Reserva', 'No le interesa', 'No puede hablar - Volver a contactar', 'Otros'];
 
@@ -39,7 +40,7 @@ ipcMain.on('generateReport', (e, filecontent) => {
     // ===============================================
     let now = new Date();
 
-    let pathToFile = dialog.showSaveDialogSync( {
+    let pathToFile = dialog.showSaveDialogSync({
         defaultPath: app.getPath('documents'),
         filters: [
             { name: 'Excel', extensions: ['xlsx', 'xls'] },
@@ -47,8 +48,8 @@ ipcMain.on('generateReport', (e, filecontent) => {
         ]
     });
 
-    if( !pathToFile ) return;
-    
+    if (!pathToFile) return;
+
     // ===============================================
     // Start Excel document
     // ===============================================
@@ -84,7 +85,7 @@ ipcMain.on('generateReport', (e, filecontent) => {
             ws.cell(2 + i, 5).string(filecontent[i].nombreCliente);
             ws.cell(2 + i, 6).string(listaActivo[Number(filecontent[i].clienteActivo)]);
             ws.cell(2 + i, 7).string(lsitaMotivo[Number(filecontent[i].motivo)]);
-            ws.cell(2 + i, 8).string(lsitaMotivo[Number(filecontent[i].tipoDeContacto)]);
+            ws.cell(2 + i, 8).string(listaTipoContacto[Number(filecontent[i].tipoDeContacto)]);
             ws.cell(2 + i, 9).string(listaContesta[Number(filecontent[i].contesta)]);
             ws.cell(2 + i, 10).string(listaRespuesta[Number(filecontent[i].respuesta)]);
             if (filecontent[i].otraRespuesta) {
