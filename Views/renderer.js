@@ -79,6 +79,16 @@ document.getElementById('firstTab').addEventListener('click', () => {
     html += '        </div>';
     html += '        <div class="input-group mb-3">';
     html += '            <div class="input-group-prepend">';
+    html += '                <label class="input-group-text" for="contactType">Tipo de contacto</label>';
+    html += '            </div>';
+    html += '            <select class="custom-select" id="contactType">';
+    html += '                <option value="0" selected>Seleccionar...</option>';
+    html += '                <option value="1">Llamada</option>';
+    html += '                <option value="2">Visita</option>';
+    html += '            </select>';
+    html += '        </div>';
+    html += '        <div class="input-group mb-3">';
+    html += '            <div class="input-group-prepend">';
     html += '                <label class="input-group-text" for="didClientAnswer">Contesta</label>';
     html += '            </div>';
     html += '            <select class="custom-select" id="didClientAnswer">';
@@ -196,6 +206,7 @@ document.getElementById('firstTab').addEventListener('click', () => {
     let contactReason = document.getElementById('contactReason');
     let didClientAnswer = document.getElementById('didClientAnswer');
     let clientResponse = document.getElementById('clientResponse');
+    let contactType = document.getElementById('contactType');
     let nextContactDate = document.getElementById('nextContactDate');
     // Informacion de reserva
     let checkInDate = document.getElementById('checkInDate');
@@ -258,6 +269,7 @@ document.getElementById('firstTab').addEventListener('click', () => {
         additionalInfo.value = '';
         comentariosGenerales.value = '';
         nextContactDate.value = '';
+        contactType.value='0';
     });
 
     // ===============================================
@@ -288,7 +300,8 @@ document.getElementById('firstTab').addEventListener('click', () => {
                 personaemail: personEmail.value,
                 informaicionAdicional: additionalInfo.value,
                 comentarios: comentariosGenerales.value,
-                fechaProximoContacto: nextContactDate.value
+                fechaProximoContacto: nextContactDate.value,
+                tipoDeContacto: contactType.value
             }
         } else {
             inputObject = {
@@ -308,7 +321,8 @@ document.getElementById('firstTab').addEventListener('click', () => {
                 personaemail: personEmail.value,
                 informaicionAdicional: additionalInfo.value,
                 comentarios: comentariosGenerales.value,
-                fechaProximoContacto: nextContactDate.value
+                fechaProximoContacto: nextContactDate.value,
+                tipoDeContacto: contactType.value
             }
         }
         contacts.addContact(inputObject);

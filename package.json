@@ -37,7 +37,7 @@
                     "ia32"
                 ]
             },
-            "certificateFile": "private/signing/certuno.pfx",
+            "certificateFile": "private/signing/Altitude-Solutions.pfx",
             "certificatePassword": "Altitude",
             "publisherName": "Altitude Solutions S.R.L.",
             "verifyUpdateCodeSignature": false
