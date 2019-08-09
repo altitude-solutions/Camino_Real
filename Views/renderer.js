@@ -1,4 +1,15 @@
 // ===============================================
+// Imports
+// ===============================================
+let contacts = require('./reg');
+let clients = require('./clients');
+
+// ===============================================
+// Load modal config
+// ===============================================
+require('./newClientModal');
+
+// ===============================================
 // Global container DOM Object
 // ===============================================
 let container = $('#content');
@@ -61,7 +72,7 @@ document.getElementById('firstTab').addEventListener('click', () => {
     html += '                <option value="1">Primer contacto</option>';
     html += '                <option value="2">Seguimiento específico</option>';
     html += '                <option value="3">Seguimiento a tarifario entregado</option>';
-    html += '                <option value="4">Seguimiento a propuesta encargado</option>';
+    html += '                <option value="4">Seguimiento a propuesta encargada</option>';
     html += '                <option value="5">LEAD</option>';
     html += '                <option value="6">Contactado por cliente</option>';
     html += '            </select>';
@@ -92,6 +103,14 @@ document.getElementById('firstTab').addEventListener('click', () => {
     html += '                        <option value="6">No puede hablar - Volver a contactar</option>';
     html += '                        <option value="7">Otros</option>';
     html += '                    </select>';
+    html += '                </div>';
+    html += '            </div>';
+    html += '            <div class="col">';
+    html += '                <div class="input-group mb-3">';
+    html += '                    <div class="input-group-prepend">';
+    html += '                        <span class="input-group-text" id="basic-addon1">Fecha de próximo contacto</span>';
+    html += '                    </div>';
+    html += '                    <input id="nextContactDate" type="date" class="form-control" aria-label="Fecha de entrada" aria-describedby="basic-addon1">';
     html += '                </div>';
     html += '            </div>';
     html += '        </div>';
@@ -147,13 +166,21 @@ document.getElementById('firstTab').addEventListener('click', () => {
     html += '            </div>';
     html += '        </div>';
     html += '    </div>';
+    html += '    <div class="col-12 d-flex justify-content-end mt-4">';
+    html += '        <div class="input-group">';
+    html += '            <div class="input-group-prepend">';
+    html += '                <span class="input-group-text">Comentarios</span>';
+    html += '            </div>';
+    html += '            <textarea id="comentariosGenerales" class="form-control" rows="10" aria-label="Otros"></textarea>';
+    html += '        </div>   ';
+    html += '    </div>';
+    html += '    <div class="col-12 d-flex justify-content-end mt-4">';
+    html += '        <button class="btn btn-dark mr-3" id="cancelButton">Cancelar</button>';
+    html += '        <button class="btn btn-dark" id="saveButton">Guardar</button>';
+    html += '    </div>';
     html += '</div>';
 
     container.html(html);
-
-
-
-
 
 
     // ===============================================
@@ -169,6 +196,7 @@ document.getElementById('firstTab').addEventListener('click', () => {
     let contactReason = document.getElementById('contactReason');
     let didClientAnswer = document.getElementById('didClientAnswer');
     let clientResponse = document.getElementById('clientResponse');
+    let nextContactDate = document.getElementById('nextContactDate');
     // Informacion de reserva
     let checkInDate = document.getElementById('checkInDate');
     let checkOutDate = document.getElementById('checkOutDate');
@@ -178,7 +206,11 @@ document.getElementById('firstTab').addEventListener('click', () => {
     let phoneNumber = document.getElementById('phoneNumber');
     let personEmail = document.getElementById('personEmail');
     let additionalInfo = document.getElementById('additionalInfo');
-
+    // Comentarios del vendedor
+    let comentariosGenerales = document.getElementById('comentariosGenerales');
+    // Control buttons
+    let cancelButton = document.getElementById('cancelButton');
+    let saveButton = document.getElementById('saveButton');
 
     // ===============================================
     // Set today's date as min for checkIn
@@ -186,6 +218,8 @@ document.getElementById('firstTab').addEventListener('click', () => {
     let today = new Date();
     datePicker.value = `${today.getFullYear()}-${today.getMonth() + 1>=10?'':'0'}${today.getMonth() + 1}-${today.getDate()>=10?'':'0'}${today.getDate()}`;
     checkInDate.setAttribute('min', `${today.getFullYear()}-${today.getMonth() + 1>=10?'':'0'}${today.getMonth() + 1}-${today.getDate()>=10?'':'0'}${today.getDate()}`);
+    checkOutDate.setAttribute('min', `${today.getFullYear()}-${today.getMonth() + 1>=10?'':'0'}${today.getMonth() + 1}-${today.getDate()>=10?'':'0'}${today.getDate()}`);
+    nextContactDate.setAttribute('min', `${today.getFullYear()}-${today.getMonth() + 1>=10?'':'0'}${today.getMonth() + 1}-${today.getDate()>=10?'':'0'}${today.getDate()}`);
 
     // ===============================================
     // Handle other client response, create or remove otherResponse field
@@ -195,11 +229,9 @@ document.getElementById('firstTab').addEventListener('click', () => {
             let otherResponseField = document.createElement('div');
             otherResponseField.className = 'input-group';
             otherResponseField.innerHTML = '<div class="input-group-prepend"> \
-<span class="input-group-text">Otro</span> \
-</div> \
-<textarea id="otherResponse" class="form-control" rows="3" aria-label="Otros"></textarea>';
-
-
+                                                <span class="input-group-text">Otro</span> \
+                                            </div> \
+                                            <textarea id="otherResponse" class="form-control" rows="3" aria-label="Otros"></textarea>';
             document.getElementById('responseInfo').appendChild(otherResponseField);
         } else {
             if (document.getElementById('responseInfo').children.length >= 2) {
@@ -208,11 +240,111 @@ document.getElementById('firstTab').addEventListener('click', () => {
         }
     });
 
+    // ===============================================
+    // Handle cancel button click event
+    // ===============================================
+    cancelButton.addEventListener('click', () => {
+        clientName.value = '';
+        clientStatus.value = '0';
+        contactReason.value = '0';
+        didClientAnswer.value = '0';
+        clientResponse.value = '0';
+        checkInDate.value = '';
+        checkOutDate.value = '';
+        roomsQuantity.value = '';
+        whoIsInCharge.value = '';
+        phoneNumber.value = '';
+        personEmail.value = '';
+        additionalInfo.value = '';
+        comentariosGenerales.value = '';
+        nextContactDate.value = '';
+    });
 
+    // ===============================================
+    // Handle accept button click event
+    // ===============================================
+    saveButton.addEventListener('click', () => {
+        // TODO: Validate data before saving
+        let inputObject;
+        // ===============================================
+        // If other response is selected add this to the object if not skip it
+        // ===============================================
+        if (document.getElementById('otherResponse')) {
+            inputObject = {
+                fechaDeContacto: datePicker.value,
+                vendedor: sellerName.value,
+                codigoCliente: clientName.value.split(': ')[0],
+                nombreCliente: clientName.value.split(': ')[1],
+                clienteActivo: clientStatus.value,
+                motivo: contactReason.value,
+                contesta: didClientAnswer.value,
+                respuesta: clientResponse.value,
+                otraRespuesta: document.getElementById('otherResponse').value,
+                fechaDeEntrada: checkInDate.value,
+                fechaDeSalida: checkOutDate.value,
+                cuartos: roomsQuantity.value,
+                personaACargo: whoIsInCharge.value,
+                numeroTelefonico: phoneNumber.value,
+                personaemail: personEmail.value,
+                informaicionAdicional: additionalInfo.value,
+                comentarios: comentariosGenerales.value,
+                fechaProximoContacto: nextContactDate.value
+            }
+        } else {
+            inputObject = {
+                fechaDeContacto: datePicker.value,
+                vendedor: sellerName.value,
+                codigoCliente: clientName.value.split(': ')[0],
+                nombreCliente: clientName.value.split(': ')[1],
+                clienteActivo: clientStatus.value,
+                motivo: contactReason.value,
+                contesta: didClientAnswer.value,
+                respuesta: clientResponse.value,
+                fechaDeEntrada: checkInDate.value,
+                fechaDeSalida: checkOutDate.value,
+                cuartos: roomsQuantity.value,
+                personaACargo: whoIsInCharge.value,
+                numeroTelefonico: phoneNumber.value,
+                personaemail: personEmail.value,
+                informaicionAdicional: additionalInfo.value,
+                comentarios: comentariosGenerales.value,
+                fechaProximoContacto: nextContactDate.value
+            }
+        }
+        contacts.addContact(inputObject);
+        cancelButton.click();
+    });
+
+    // ===============================================
+    // Give suggestions while client field is being written to
+    // ===============================================
+    clientName.addEventListener('input', () => {
+        if (clientName.value) {
+            // suggestions array returned by clients object
+            let suggestions = clients.getClientSuggestion(clientName.value);
+            // Purge datalist DOM object
+            while (clientSuggestionList.firstChild) {
+                clientSuggestionList.removeChild(clientSuggestionList.firstChild);
+            }
+            // Fill datalist DOM with new suggestions
+            for (let i = 0; i < suggestions.length; i++) {
+                let opt = document.createElement('option');
+                opt.value = `${suggestions[i].code}: ${suggestions[i].name}`;
+                clientSuggestionList.appendChild(opt);
+            }
+        } else {
+            // If no input purge suggestions
+            while (clientSuggestionList.firstChild) {
+                clientSuggestionList.removeChild(clientSuggestionList.firstChild);
+            }
+        }
+    });
 });
 
 
-
+// ===============================================
+// Second tab config
+// ===============================================
 document.getElementById('secondTab').addEventListener('click', () => {
     // ===============================================
     // Set second tab selector as active
@@ -223,7 +355,6 @@ document.getElementById('secondTab').addEventListener('click', () => {
     // ===============================================
     // Create and show second tab
     // ===============================================
-
     let html = '';
     html += '<div class="row">';
     html += '    <div class="col-3">';
@@ -234,9 +365,6 @@ document.getElementById('secondTab').addEventListener('click', () => {
     html += '    </div>';
     html += '</div>';
     container.html(html);
-
-
-
 });
 
 

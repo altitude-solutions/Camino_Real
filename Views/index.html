@@ -26,6 +26,30 @@
     <div id="content" class="container-fuild p-3">
     </div>
 
+    <!-- New Client modal window -->
+    <div class="modal fade" id="newClientModal" tabindex="-1" role="dialog" aria-labelledby="newClientModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newClientModalLabel">Nuevo Cliente</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Código y Nombre</span>
+                        </div>
+                        <input placeholder="Código" id="modalClientNumber" type="number" aria-label="First name" class="form-control">
+                        <input placeholder="Nombre" id="modalClientName" min="1" type="text" aria-label="Last name" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="modalCancelButton" type="button" class="btn btn-dark" data-dismiss="modal">Cancelar</button>
+                    <button id="modalAcceptButton" type="button" class="btn btn-dark">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Bootstrap and jQuery imports -->
     <script>

@@ -1,11 +1,11 @@
 {
     "name": "hotel",
-    "version": "0.9.1",
+    "version": "1.0.2",
     "description": "Altitude-Solutions",
     "main": "main.js",
     "scripts": {
-        "test": "ENVIROMENT=dev nodemon --exec 'electron .'",
-        "start": "ENVIROMENT=dev electron .",
+        "test": "nodemon --exec 'electron .'",
+        "start": "electron .",
         "build": "electron-builder -wl",
         "mac": "electron-builder -m",
         "win": "electron-builder -w",
@@ -40,8 +40,7 @@
             "certificateFile": "private/signing/certuno.pfx",
             "certificatePassword": "Altitude",
             "publisherName": "Altitude Solutions S.R.L.",
-            "verifyUpdateCodeSignature": false,
-            "requestedExecutionLevel": "requireAdministrator"
+            "verifyUpdateCodeSignature": false
         },
         "linux": {
             "publish": [
