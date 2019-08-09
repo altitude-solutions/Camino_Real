@@ -34,11 +34,7 @@ ipcMain.on('generateReport', (e, filecontent) => {
     });
     // Add a sheet to the workbook
     let ws = wb.addWorksheet('Base de datos');
-
-    // ===============================================
-    // Current time and date
-    // ===============================================
-    let now = new Date();
+    let ws2 = wb.addWorksheet('Registro de acciones');
 
     let pathToFile = dialog.showSaveDialogSync({
         defaultPath: app.getPath('documents'),
@@ -49,9 +45,10 @@ ipcMain.on('generateReport', (e, filecontent) => {
     });
 
     if (!pathToFile) return;
+    if (!pathToFile.split('.')[1]) pathToFile += '.xlsx';
 
     // ===============================================
-    // Start Excel document
+    // Start 'Base de datos spreadsheet'
     // ===============================================
     // Column titiles
     ws.cell(1, 1).string('Fecha de Contacto');
@@ -75,47 +72,72 @@ ipcMain.on('generateReport', (e, filecontent) => {
     ws.cell(1, 19).string('Fecha Próximo Contacto');
     ws.cell(1, 20).string('Comentarios');
 
-    if (filecontent[0]) {
+    if (filecontent.registroContactos[0]) {
         // Datos del reporte
-        for (let i = 0; i < filecontent.length; i++) {
-            ws.cell(2 + i, 1).string(filecontent[i].fechaDeContacto);
-            ws.cell(2 + i, 2).date(now);
-            ws.cell(2 + i, 3).string(filecontent[i].vendedor);
-            ws.cell(2 + i, 4).string(filecontent[i].codigoCliente);
-            ws.cell(2 + i, 5).string(filecontent[i].nombreCliente);
-            ws.cell(2 + i, 6).string(listaActivo[Number(filecontent[i].clienteActivo)]);
-            ws.cell(2 + i, 7).string(lsitaMotivo[Number(filecontent[i].motivo)]);
-            ws.cell(2 + i, 8).string(listaTipoContacto[Number(filecontent[i].tipoDeContacto)]);
-            ws.cell(2 + i, 9).string(listaContesta[Number(filecontent[i].contesta)]);
-            ws.cell(2 + i, 10).string(listaRespuesta[Number(filecontent[i].respuesta)]);
-            if (filecontent[i].otraRespuesta) {
-                ws.cell(2 + i, 11).string(filecontent[i].otraRespuesta);
+        for (let i = 0; i < filecontent.registroContactos.length; i++) {
+            ws.cell(2 + i, 1).string(filecontent.registroContactos[i].fechaDeContacto);
+            ws.cell(2 + i, 2).date(filecontent.registroContactos[i].fechaDeRegistro);
+            ws.cell(2 + i, 3).string(filecontent.registroContactos[i].vendedor);
+            ws.cell(2 + i, 4).number(Number(filecontent.registroContactos[i].codigoCliente));
+            ws.cell(2 + i, 5).string(filecontent.registroContactos[i].nombreCliente);
+            ws.cell(2 + i, 6).string(listaActivo[Number(filecontent.registroContactos[i].clienteActivo)]);
+            ws.cell(2 + i, 7).string(lsitaMotivo[Number(filecontent.registroContactos[i].motivo)]);
+            ws.cell(2 + i, 8).string(listaTipoContacto[Number(filecontent.registroContactos[i].tipoDeContacto)]);
+            ws.cell(2 + i, 9).string(listaContesta[Number(filecontent.registroContactos[i].contesta)]);
+            ws.cell(2 + i, 10).string(listaRespuesta[Number(filecontent.registroContactos[i].respuesta)]);
+            if (filecontent.registroContactos[i].otraRespuesta) {
+                ws.cell(2 + i, 11).string(filecontent.registroContactos[i].otraRespuesta);
             } else {
                 ws.cell(2 + i, 11).string('-');
             }
-            ws.cell(2 + i, 12).string(filecontent[i].fechaDeEntrada);
-            ws.cell(2 + i, 13).string(filecontent[i].fechaDeSalida);
-            ws.cell(2 + i, 14).string(filecontent[i].cuartos);
-            ws.cell(2 + i, 15).string(filecontent[i].personaACargo);
-            ws.cell(2 + i, 16).string(filecontent[i].numeroTelefonico);
-            ws.cell(2 + i, 17).string(filecontent[i].personaemail);
-            ws.cell(2 + i, 18).string(filecontent[i].informaicionAdicional);
-            ws.cell(2 + i, 19).string(filecontent[i].fechaProximoContacto);
-            ws.cell(2 + i, 20).string(filecontent[i].comentarios);
-
+            ws.cell(2 + i, 12).string(filecontent.registroContactos[i].fechaDeEntrada);
+            ws.cell(2 + i, 13).string(filecontent.registroContactos[i].fechaDeSalida);
+            ws.cell(2 + i, 14).number(Number(filecontent.registroContactos[i].cuartos));
+            ws.cell(2 + i, 15).string(filecontent.registroContactos[i].personaACargo);
+            ws.cell(2 + i, 16).string(filecontent.registroContactos[i].numeroTelefonico);
+            ws.cell(2 + i, 17).string(filecontent.registroContactos[i].personaemail);
+            ws.cell(2 + i, 18).string(filecontent.registroContactos[i].informaicionAdicional);
+            ws.cell(2 + i, 19).string(filecontent.registroContactos[i].fechaProximoContacto);
+            ws.cell(2 + i, 20).string(filecontent.registroContactos[i].comentarios);
         }
 
-        // Save File to system desktop
+        // ===============================================
+        // Start 'Registro de acciones spreadsheet'
+        // ===============================================
+        // Column titles
+        ws2.cell(1, 1).string('Fecha de Creación');
+        ws2.cell(1, 2).string('Fecha Límite')
+        ws2.cell(1, 3).string('Cliente');
+        ws2.cell(1, 4).string('Solicitud');
+        ws2.cell(1, 5).string('Empleado asignado');
+        ws2.cell(1, 6).string('Completado');
+
+        // Data
+        for (let i = 0; i < filecontent.registroAcciones.length; i++) {
+            ws2.cell(2 + i, 1).date(new Date(filecontent.registroAcciones[i].fechaDeCreacion));
+            ws2.cell(2 + i, 2).date(new Date(filecontent.registroAcciones[i].fechaLimite));
+            ws2.cell(2 + i, 3).string(filecontent.registroAcciones[i].cliente.split(': ')[1]);
+            ws2.cell(2 + i, 4).string(filecontent.registroAcciones[i].pedido);
+            ws2.cell(2 + i, 5).string(filecontent.registroAcciones[i].vendedor);
+            ws2.cell(2 + i, 6).string(filecontent.registroAcciones[i].entregado == '0' ? 'Pendiente' : 'Entregado');
+        }
+
+
+        // ===============================================
+        // Save File to selected path
+        // ===============================================
         wb.write(pathToFile, (err, stats) => {
             if (err) {
                 dialog.showErrorBox('No se pudo generar el reporte', `${err}`);
-            } else {
-                dialog.showMessageBox({
-                    title: 'Éxito',
-                    message: 'El archivo se guardo con éxito.'
-                });
             }
         });
+
+        wb.write(path.join(app.getPath('documents'), 'Altitude Solutions-Demo.xlsx'), (err, stats) => {
+            if (err) {
+                dialog.showErrorBox('No se pudo generar el reporte', `${err}`);
+            }
+        });
+
     } else {
         dialog.showErrorBox('No hay datos', 'Imposible generar reportes.\nNo se han generado datos.');
     }

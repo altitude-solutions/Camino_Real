@@ -2,39 +2,37 @@ const { remote, ipcRenderer } = require('electron');
 
 
 let menuTemplate = [{
-        label: "Herramientas",
-        submenu: [{
-                label: "Nuevo cliente",
-                click: window.createNewClient,
-                accelerator: 'CmdOrCtrl+N'
-            },
-            {
-                label: "Generar Excel",
-                click: window.generateReport,
-                accelerator: 'CmdOrCtrl+G'
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Importar clientes',
-                click: () => {
-                    ipcRenderer.send('loadClientList');
-                }
+    label: "Herramientas",
+    submenu: [{
+            label: "Nuevo cliente",
+            click: window.createNewClient,
+            accelerator: 'CmdOrCtrl+N'
+        },
+        {
+            label: "Generar Excel",
+            click: window.generateReport,
+            accelerator: 'CmdOrCtrl+G'
+        },
+        {
+            type: 'separator'
+        },
+        {
+            label: 'Borrar base de datos',
+            click: () => {
+                remote.dialog.showMessageBox({
+                    title: 'Borrar base de datos',
+                    message: 'Esta acción tiene efecto permanente. No se podrán recuperar los datos eliminados.',
+                    buttons: ['Cancelar', 'Borrar']
+                }, (index) => {
+                    if (index === 1) return;
+                    localStorage.removeItem('contacts');
+                    localStorage.removeItem('clients');
+                    localStorage.removeItem('tasks');
+                });
             }
-        ]
-    },
-    {
-        // ===============================================
-        // TODO: Eliminar esta opcion, solo mantener en desarrollo
-        // ===============================================
-        label: 'Borrar',
-        click: () => {
-            localStorage.removeItem('contacts');
-            localStorage.removeItem('clients');
         }
-    }
-];
+    ]
+}];
 
 if (process.platform === 'darwin') {
     menuTemplate.unshift({

@@ -3,6 +3,19 @@
 // ===============================================
 let contacts = require('./reg');
 let clients = require('./clients');
+let tasks = require('./tasks');
+
+
+// ===============================================
+// Generate report in EXCEL for showing in POWER BI
+// ===============================================
+window.generateReport = () => {
+    ipcRenderer.send('generateReport', {
+        registroContactos: contacts.storage,
+        registroAcciones: tasks.taskList
+    });
+};
+
 
 // ===============================================
 // Load modal config
@@ -181,7 +194,7 @@ document.getElementById('firstTab').addEventListener('click', () => {
     html += '            <div class="input-group-prepend">';
     html += '                <span class="input-group-text">Comentarios</span>';
     html += '            </div>';
-    html += '            <textarea id="comentariosGenerales" class="form-control" rows="10" aria-label="Otros"></textarea>';
+    html += '            <textarea id="comentariosGenerales" class="form-control" rows="6" aria-label="Otros"></textarea>';
     html += '        </div>   ';
     html += '    </div>';
     html += '    <div class="col-12 d-flex justify-content-end mt-4">';
@@ -269,13 +282,15 @@ document.getElementById('firstTab').addEventListener('click', () => {
         additionalInfo.value = '';
         comentariosGenerales.value = '';
         nextContactDate.value = '';
-        contactType.value='0';
+        contactType.value = '0';
     });
 
     // ===============================================
     // Handle accept button click event
     // ===============================================
     saveButton.addEventListener('click', () => {
+        // Current time
+        let now = new Date();
         // TODO: Validate data before saving
         let inputObject;
         // ===============================================
@@ -284,6 +299,7 @@ document.getElementById('firstTab').addEventListener('click', () => {
         if (document.getElementById('otherResponse')) {
             inputObject = {
                 fechaDeContacto: datePicker.value,
+                fechaDeRegistro: now,
                 vendedor: sellerName.value,
                 codigoCliente: clientName.value.split(': ')[0],
                 nombreCliente: clientName.value.split(': ')[1],
@@ -306,6 +322,7 @@ document.getElementById('firstTab').addEventListener('click', () => {
         } else {
             inputObject = {
                 fechaDeContacto: datePicker.value,
+                fechaDeRegistro: now,
                 vendedor: sellerName.value,
                 codigoCliente: clientName.value.split(': ')[0],
                 nombreCliente: clientName.value.split(': ')[1],
@@ -324,6 +341,16 @@ document.getElementById('firstTab').addEventListener('click', () => {
                 fechaProximoContacto: nextContactDate.value,
                 tipoDeContacto: contactType.value
             }
+        }
+        if (clientResponse.value === '1' || clientResponse.value === '2' || clientResponse.value === '3') {
+            tasks.addNewTask({
+                pedido: clientResponse.value,
+                vendedor: sellerName.value,
+                cliente: clientName.value,
+                fechaDeCreacion: now,
+                fechaLimite: new Date(nextContactDate.value),
+                entregado: false
+            });
         }
         contacts.addContact(inputObject);
         cancelButton.click();
@@ -361,6 +388,13 @@ document.getElementById('firstTab').addEventListener('click', () => {
 // ===============================================
 document.getElementById('secondTab').addEventListener('click', () => {
     // ===============================================
+    // Opciones para las listas de seleccion multiple
+    // ===============================================
+    let listaRespuesta = ['', 'Tarifario', 'Primera propuesta', 'Nueva propuesta'];
+    // Pending tasks
+    let pending = tasks.getTaskstoDo();
+
+    // ===============================================
     // Set second tab selector as active
     // ===============================================
     document.getElementById('firstTab').classList.remove('active');
@@ -370,15 +404,50 @@ document.getElementById('secondTab').addEventListener('click', () => {
     // Create and show second tab
     // ===============================================
     let html = '';
-    html += '<div class="row">';
-    html += '    <div class="col-3">';
-    html += '        columna 3';
-    html += '    </div>';
-    html += '    <div class="col-9">';
-    html += '        columna 9';
-    html += '    </div>';
-    html += '</div>';
+    html += '    <table class="table">';
+    html += '        <thead>';
+    html += '            <tr>';
+    html += '                <th scope="col">#</th>';
+    html += '                <th scope="col">Fecha de creación</th>';
+    html += '                <th scope="col">Fecha límite de entrega</th>';
+    html += '                <th scope="col">Cliente</th>';
+    html += '                <th scope="col">Solicitud</th>';
+    html += '                <th scope="col">Empleado asignado</th>';
+    html += '                <th scope="col">Completado</th>';
+    html += '            </tr>';
+    html += '        </thead>';
+    html += '        <tbody>';
+
+    for (let i = 0; i < pending.length; i++) {
+        html += '            <tr>';
+        html += `                <th scope="row">${i+1}</th>`;
+        html += `                <td>${new Date(pending[i].fechaDeCreacion).toLocaleDateString()}</td>`;
+        html += `                <td>${new Date(pending[i].fechaLimite).toLocaleDateString()}</td>`;
+        html += `                <td>${pending[i].cliente.split(': ')[1]}</td>`;
+        html += `                <td>${listaRespuesta[ Number( pending[i].pedido) ]}</td>`;
+        html += `                <td>${pending[i].vendedor}</td>`;
+        html += '                <td>';
+        html += '                    <div class="form-group form-check">';
+        html += `                        <input type="checkbox" class="form-check-input" id="task-done-${i}">`;
+        html += `                        <label class="form-check-label" for="task-done-${i}">Completado</label>`;
+        html += '                    </div>';
+        html += '                </td>';
+        html += '            </tr>';
+    }
+    html += '        </tbody>';
+    html += '    </table>';
     container.html(html);
+
+    // ===============================================
+    // Add event listeners for every task done checkbox
+    // ===============================================
+    for (let i = 0; i < pending.length; i++) {
+        document.getElementById(`task-done-${i}`).addEventListener('input', () => {
+            tasks.markAsDone(`${i}`);
+            // refresh tab
+            document.getElementById('secondTab').click();
+        });
+    }
 });
 
 

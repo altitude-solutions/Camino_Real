@@ -41,7 +41,9 @@ function createWindow() {
     mainWindow.loadFile('Views/index.html');
 
     // Just for development
-    mainWindow.webContents.openDevTools();
+    if (process.env.HOTEL_ENVIROMENT === 'dev') {
+        mainWindow.webContents.openDevTools();
+    }
 
     state.manage(mainWindow);
 
@@ -63,7 +65,7 @@ app.on('ready', () => {
     // Check for updates after 2 seconds from app ready event
     // NOTE: Only if it is on production enviroment
     // ===============================================
-    if (process.env.ENVIROMENT !== 'dev') {
+    if (process.env.HOTEL_ENVIROMENT !== 'dev') {
         setTimeout(updater.check, 2000);
     }
 });
