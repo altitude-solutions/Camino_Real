@@ -140,7 +140,7 @@ document.getElementById('firstTab').addEventListener('click', () => {
     html += '        <hr>';
     html += '        <div class="row">';
     html += '            <div class="col">';
-    html += '                <h3 class="text-justify">Información de propuesta o reservación</h3>';
+    html += '                <h3 class="text-justify">Información de propuesta o reserva</h3>';
     html += '                <div class="input-group mb-3">';
     html += '                    <div class="input-group-prepend">';
     html += '                        <span class="input-group-text" id="basic-addon1">Fecha de entrada</span>';
@@ -257,6 +257,14 @@ document.getElementById('firstTab').addEventListener('click', () => {
                                             </div> \
                                             <textarea id="otherResponse" class="form-control" rows="3" aria-label="Otros"></textarea>';
             document.getElementById('responseInfo').appendChild(otherResponseField);
+
+            document.getElementById('otherResponse').addEventListener('input', () => {
+                if (!document.getElementById('otherResponse').value) {
+                    document.getElementById('otherResponse').classList.add('is-invalid');
+                } else {
+                    document.getElementById('otherResponse').classList.remove('is-invalid');
+                }
+            });
         } else {
             if (document.getElementById('responseInfo').children.length >= 2) {
                 document.getElementById('responseInfo').removeChild(document.getElementById('responseInfo').lastChild);
@@ -283,15 +291,167 @@ document.getElementById('firstTab').addEventListener('click', () => {
         comentariosGenerales.value = '';
         nextContactDate.value = '';
         contactType.value = '0';
+        if (document.getElementById('responseInfo').children.length >= 2) {
+            document.getElementById('responseInfo').removeChild(document.getElementById('responseInfo').lastChild);
+        }
     });
+
+    // ===============================================
+    // Remove warnings as valid inputs are filled
+    // ===============================================
+    // Contact date
+    datePicker.addEventListener('input', () => {
+        datePicker.classList.remove('is-invalid');
+    });
+    // Seller name
+    sellerName.addEventListener('input', () => {
+        sellerName.classList.remove('is-invalid');
+    });
+    // client name
+    clientName.addEventListener('input', () => {
+        clientName.classList.remove('is-invalid');
+    });
+    // Client status
+    clientStatus.addEventListener('input', () => {
+        if (clientStatus.value === '0') {
+            clientStatus.classList.add('is-invalid');
+        } else {
+            clientStatus.classList.remove('is-invalid');
+        }
+    });
+    // motivo
+    contactReason.addEventListener('input', () => {
+        if (contactReason.value === '0') {
+            contactReason.classList.add('is-invalid');
+        } else {
+            contactReason.classList.remove('is-invalid');
+        }
+    });
+    // tipo de contact
+    contactType.addEventListener('input', () => {
+        if (contactType.value === '0') {
+            contactType.classList.add('is-invalid');
+        } else {
+            contactType.classList.remove('is-invalid');
+        }
+    });
+    // contesta
+    didClientAnswer.addEventListener('input', () => {
+        if (didClientAnswer.value === '0') {
+            didClientAnswer.classList.add('is-invalid');
+        } else {
+            didClientAnswer.classList.remove('is-invalid');
+        }
+    });
+    // respuesta cliente
+    clientResponse.addEventListener('input', () => {
+        if (clientResponse.value === '0') {
+            clientResponse.classList.add('is-invalid');
+        } else {
+            clientResponse.classList.remove('is-invalid');
+        }
+    });
+    // Fecha de Proximo contacto
+    nextContactDate.addEventListener('input', () => {
+        if (!nextContactDate.value) {
+            nextContactDate.classList.add('is-invalid');
+        } else {
+            nextContactDate.classList.remove('is-invalid');
+        }
+    });
+
+
 
     // ===============================================
     // Handle accept button click event
     // ===============================================
     saveButton.addEventListener('click', () => {
+        // ===============================================
+        // Validators
+        // ===============================================
+        // Validate register date
+        if (!datePicker.value) {
+            datePicker.classList.add('is-invalid');
+            datePicker.focus();
+            return;
+        } else {
+            datePicker.classList.remove('is-invalid');
+        }
+        // Validate seller name
+        if (!sellerName.value) {
+            sellerName.classList.add('is-invalid');
+            sellerName.focus();
+            return;
+        } else {
+            sellerName.classList.remove('is-invalid');
+        }
+        // Validate client name
+        if (!clientName.value) {
+            clientName.classList.add('is-invalid');
+            clientName.focus();
+            return;
+        } else {
+            clientName.classList.remove('is-invalid');
+        }
+        // Validate 'cliente activo'
+        if (clientStatus.value === '0') {
+            clientStatus.classList.add('is-invalid');
+            clientStatus.focus();
+            return;
+        } else {
+            clientStatus.classList.remove('is-invalid');
+        }
+        // Validate motivo
+        if (contactReason.value === '0') {
+            contactReason.classList.add('is-invalid');
+            contactReason.focus();
+            return;
+        } else {
+            contactReason.classList.remove('is-invalid');
+        }
+        // Validate contact type
+        if (contactType.value === '0') {
+            contactType.classList.add('is-invalid');
+            contactType.focus();
+            return;
+        } else {
+            contactType.classList.remove('is-invalid');
+        }
+        // Validate constesta
+        if (didClientAnswer.value === '0') {
+            didClientAnswer.classList.add('is-invalid');
+            didClientAnswer.focus();
+            return;
+        } else {
+            didClientAnswer.classList.remove('is-invalid');
+        }
+        // Validate response
+        if (clientResponse.value === '0') {
+            clientResponse.classList.add('is-invalid');
+            clientResponse.focus();
+            return;
+        } else {
+            clientResponse.classList.remove('is-invalid');
+        }
+        // Validate other response
+        if (clientResponse.value === '7' && !document.getElementById('otherResponse').value) {
+            document.getElementById('otherResponse').classList.add('is-invalid');
+            document.getElementById('otherResponse').focus();
+            return;
+        } else {
+            document.getElementById('otherResponse').classList.remove('is-invalid');
+        }
+        // Validate next contact date
+        if (!nextContactDate.value) {
+            nextContactDate.classList.add('is-invalid');
+            nextContactDate.focus();
+            return;
+        } else {
+            nextContactDate.classList.remove('is-invalid');
+        }
+
         // Current time
         let now = new Date();
-        // TODO: Validate data before saving
         let inputObject;
         // ===============================================
         // If other response is selected add this to the object if not skip it
@@ -417,7 +577,6 @@ document.getElementById('secondTab').addEventListener('click', () => {
     html += '            </tr>';
     html += '        </thead>';
     html += '        <tbody>';
-
     for (let i = 0; i < pending.length; i++) {
         html += '            <tr>';
         html += `                <th scope="row">${i+1}</th>`;
@@ -437,7 +596,6 @@ document.getElementById('secondTab').addEventListener('click', () => {
     html += '        </tbody>';
     html += '    </table>';
     container.html(html);
-
     // ===============================================
     // Add event listeners for every task done checkbox
     // ===============================================
@@ -449,7 +607,6 @@ document.getElementById('secondTab').addEventListener('click', () => {
         });
     }
 });
-
 
 // ===============================================
 // Force first click to start at first tab

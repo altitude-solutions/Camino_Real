@@ -90,15 +90,51 @@ ipcMain.on('generateReport', (e, filecontent) => {
             } else {
                 ws.cell(2 + i, 11).string('-');
             }
-            ws.cell(2 + i, 12).string(filecontent.registroContactos[i].fechaDeEntrada);
-            ws.cell(2 + i, 13).string(filecontent.registroContactos[i].fechaDeSalida);
-            ws.cell(2 + i, 14).number(Number(filecontent.registroContactos[i].cuartos));
-            ws.cell(2 + i, 15).string(filecontent.registroContactos[i].personaACargo);
-            ws.cell(2 + i, 16).string(filecontent.registroContactos[i].numeroTelefonico);
-            ws.cell(2 + i, 17).string(filecontent.registroContactos[i].personaemail);
-            ws.cell(2 + i, 18).string(filecontent.registroContactos[i].informaicionAdicional);
-            ws.cell(2 + i, 19).string(filecontent.registroContactos[i].fechaProximoContacto);
-            ws.cell(2 + i, 20).string(filecontent.registroContactos[i].comentarios);
+            if (filecontent.registroContactos[i].fechaDeEntrada) {
+                ws.cell(2 + i, 12).string(filecontent.registroContactos[i].fechaDeEntrada);
+            } else {
+                ws.cell(2 + i, 12).string('-');
+            }
+            if (filecontent.registroContactos[i].fechaDeSalida) {
+                ws.cell(2 + i, 13).string(filecontent.registroContactos[i].fechaDeSalida);
+            } else {
+                ws.cell(2 + i, 13).string('-');
+            }
+            if (filecontent.registroContactos[i].cuartos) {
+                ws.cell(2 + i, 14).number(Number(filecontent.registroContactos[i].cuartos));
+            } else {
+                ws.cell(2 + i, 14).string('-');
+            }
+            if (filecontent.registroContactos[i].personaACargo) {
+                ws.cell(2 + i, 15).string(filecontent.registroContactos[i].personaACargo);
+            } else {
+                ws.cell(2 + i, 15).string('-');
+            }
+            if (filecontent.registroContactos[i].numeroTelefonico) {
+                ws.cell(2 + i, 16).string(filecontent.registroContactos[i].numeroTelefonico);
+            } else {
+                ws.cell(2 + i, 16).string('-');
+            }
+            if (filecontent.registroContactos[i].personaemail) {
+                ws.cell(2 + i, 17).string(filecontent.registroContactos[i].personaemail);
+            } else {
+                ws.cell(2 + i, 17).string('-');
+            }
+            if (filecontent.registroContactos[i].informaicionAdicional) {
+                ws.cell(2 + i, 18).string(filecontent.registroContactos[i].informaicionAdicional);
+            } else {
+                ws.cell(2 + i, 18).string('-');
+            }
+            if (filecontent.registroContactos[i].fechaProximoContacto) {
+                ws.cell(2 + i, 19).string(filecontent.registroContactos[i].fechaProximoContacto);
+            } else {
+                ws.cell(2 + i, 19).string('-');
+            }
+            if (filecontent.registroContactos[i].comentarios) {
+                ws.cell(2 + i, 20).string(filecontent.registroContactos[i].comentarios);
+            } else {
+                ws.cell(2 + i, 20).string('-');
+            }
         }
 
         // ===============================================
@@ -117,7 +153,7 @@ ipcMain.on('generateReport', (e, filecontent) => {
             ws2.cell(2 + i, 1).date(new Date(filecontent.registroAcciones[i].fechaDeCreacion));
             ws2.cell(2 + i, 2).date(new Date(filecontent.registroAcciones[i].fechaLimite));
             ws2.cell(2 + i, 3).string(filecontent.registroAcciones[i].cliente.split(': ')[1]);
-            ws2.cell(2 + i, 4).string(filecontent.registroAcciones[i].pedido);
+            ws2.cell(2 + i, 4).string(listaRespuesta[Number(filecontent.registroAcciones[i].pedido)]);
             ws2.cell(2 + i, 5).string(filecontent.registroAcciones[i].vendedor);
             ws2.cell(2 + i, 6).string(filecontent.registroAcciones[i].entregado == '0' ? 'Pendiente' : 'Entregado');
         }

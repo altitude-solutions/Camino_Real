@@ -24,7 +24,7 @@ let menuTemplate = [{
                     message: 'Esta acción tiene efecto permanente. No se podrán recuperar los datos eliminados.',
                     buttons: ['Cancelar', 'Borrar']
                 }, (index) => {
-                    if (index === 1) return;
+                    if (index === 0) return;
                     localStorage.removeItem('contacts');
                     localStorage.removeItem('clients');
                     localStorage.removeItem('tasks');
