@@ -5,6 +5,21 @@ let contacts = require('./reg');
 let clients = require('./clients');
 let tasks = require('./tasks');
 
+// ===============================================
+// Delet database function
+// ===============================================
+function deleteHotelDatabase() {
+    // Delete contacts
+    contacts.storage = [];
+    localStorage.removeItem('contacts');
+    // Delete Clients
+    clients.clientList = [];
+    localStorage.removeItem('clients');
+    // Delete tasks
+    tasks.taskList = [];
+    localStorage.removeItem('tasks');
+}
+
 
 // ===============================================
 // Generate report in EXCEL for showing in POWER BI
@@ -434,12 +449,14 @@ document.getElementById('firstTab').addEventListener('click', () => {
             clientResponse.classList.remove('is-invalid');
         }
         // Validate other response
-        if (clientResponse.value === '7' && !document.getElementById('otherResponse').value) {
-            document.getElementById('otherResponse').classList.add('is-invalid');
-            document.getElementById('otherResponse').focus();
-            return;
-        } else {
-            document.getElementById('otherResponse').classList.remove('is-invalid');
+        if (clientResponse.value === '7') {
+            if (!document.getElementById('otherResponse').value) {
+                document.getElementById('otherResponse').classList.add('is-invalid');
+                document.getElementById('otherResponse').focus();
+                return;
+            } else {
+                document.getElementById('otherResponse').classList.remove('is-invalid');
+            }
         }
         // Validate next contact date
         if (!nextContactDate.value) {

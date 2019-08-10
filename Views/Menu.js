@@ -25,9 +25,7 @@ let menuTemplate = [{
                     buttons: ['Cancelar', 'Borrar']
                 }, (index) => {
                     if (index === 0) return;
-                    localStorage.removeItem('contacts');
-                    localStorage.removeItem('clients');
-                    localStorage.removeItem('tasks');
+                    deleteHotelDatabase();
                 });
             }
         }
