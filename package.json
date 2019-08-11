@@ -1,6 +1,6 @@
 {
     "name": "hotel",
-    "version": "1.0.5",
+    "version": "1.1.0",
     "description": "Altitude-Solutions",
     "main": "main.js",
     "scripts": {
@@ -88,7 +88,8 @@
         "electron-window-state": "^5.0.3",
         "excel4node": "^1.7.2",
         "jquery": "^3.4.1",
-        "popper.js": "^1.15.0"
+        "popper.js": "^1.15.0",
+        "xlsx": "^0.15.0"
     },
     "devDependencies": {
         "electron": "^6.0.0",

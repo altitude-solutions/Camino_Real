@@ -3,12 +3,14 @@
 // ===============================================
 const { app, ipcMain, dialog } = require('electron');
 const path = require('path');
-const fs = require('fs');
 
 // ===============================================
 // Import excel module
 // ===============================================
 const excel = require('excel4node');
+// TODO: migrade all excel operations from excel4node to xlsx
+const excelWriter = require('xlsx');
+
 
 
 // ===============================================
@@ -184,12 +186,11 @@ ipcMain.on('generateReport', (e, filecontent) => {
 // ===============================================
 // Load client list from and excel file
 // ===============================================
-// TODO: falta cargar el archivo. De momento solo muestra el path hacia el archivo
-ipcMain.on('loadClientList', (e) => {
+ipcMain.on('importClientList', (e) => {
     // ===============================================
     // Select file
     // ===============================================
-    dialog.showOpenDialog(mainWindow, {
+    dialog.showOpenDialog({
         properties: ['openFile'],
         title: 'Importar clientes',
         defaultPath: app.getPath('documents'),
@@ -198,6 +199,16 @@ ipcMain.on('loadClientList', (e) => {
             { name: 'Todos los archivos', extensions: ['*'] }
         ]
     }, (res) => {
-        console.log(res[0]); // show path to file
+        if (res[0].split('.')[res[0].split('.').length - 1] === 'xlsx' || res[0].split('.')[res[0].split('.').length - 1] === 'xls') {
+            let workbook = excelWriter.readFile(res[0]);
+            if (workbook.SheetNames.includes('Categoria PowerBI')) {
+                // console.log(excelWriter.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[workbook.SheetNames.indexOf('Categoria PowerBI')]]));
+                e.sender.send('clientListContent', excelWriter.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[workbook.SheetNames.indexOf('Categoria PowerBI')]]));
+            } else {
+                console.log('No existe');
+            }
+        } else {
+            dialog.showErrorBox('Error leyendo el archivo', `${res[0]} no es un archivo válido.\nLas extenciones aceptadas son: xlsx y xls`);
+        }
     });
 });

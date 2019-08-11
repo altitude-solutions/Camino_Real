@@ -1,4 +1,4 @@
-const { remote, ipcRenderer } = require('electron');
+const { remote } = require('electron');
 
 
 let menuTemplate = [{
@@ -11,7 +11,16 @@ let menuTemplate = [{
         {
             label: "Generar Excel",
             click: window.generateReport,
-            accelerator: 'CmdOrCtrl+G'
+            accelerator: 'CmdOrCtrl+S'
+        },
+        {
+            type: 'separator'
+        },
+        {
+            label: 'Importar clientes',
+            click: () => {
+                ipcRenderer.send('importClientList');
+            }
         },
         {
             type: 'separator'

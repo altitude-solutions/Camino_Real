@@ -3,12 +3,12 @@
 // ===============================================
 const { app, BrowserWindow } = require('electron');
 const windowState = require('electron-window-state');
-const path = require('path');
+
 
 // ===============================================
-// Import excel manager
+// Run excel config
 // ===============================================
-const excel = require('./excelManager');
+require('./excelManager');
 
 
 // ===============================================

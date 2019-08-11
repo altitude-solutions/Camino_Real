@@ -23,7 +23,8 @@ exports.addNewClient = (client) => {
 exports.getClientSuggestion = (token) => {
     let suggestion = [];
     Array.from(this.clientList).forEach(client => {
-        if (client.name.toLowerCase().includes(token) || client.name.includes(token) || client.name.toUpperCase().includes(token)) {
+        if (client.name.toLowerCase().includes(token) || client.name.toUpperCase().includes(token)) {
+            // if (client.name.toLowerCase().includes(token) || client.name.includes(token) || client.name.toUpperCase().includes(token)) {
             suggestion.push(client);
         } else {
             if (client.code.includes(token)) {
