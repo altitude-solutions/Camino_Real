@@ -485,7 +485,8 @@ document.getElementById('firstTab').addEventListener('click', () => {
     // Validate email
     personEmail.addEventListener('input', () => {
         if (personEmail.value) {
-            if (personEmail.value.match(/^[a-zA-Z0-9_.]{1,30}[@]{1}[a-zA-Z0-9_.]{1,30}[.]{1}[a-zA-Z0-9_.]{1,10}$/)) {
+            if (personEmail.value.match(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i)) {
+                // if (personEmail.value.match(/^[a-zA-Z0-9_.]{1,30}[@]{1}[a-zA-Z0-9_.]{1,30}[.]{1}[a-zA-Z0-9_.]{1,10}$/)) {
                 personEmail.classList.remove('is-invalid');
             } else {
                 personEmail.classList.add('is-invalid');
