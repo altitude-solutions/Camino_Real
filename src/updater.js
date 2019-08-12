@@ -45,7 +45,8 @@ exports.check = () => {
             // ===============================================
             let progressWin = new BrowserWindow({
                 width: 350,
-                height: 80,
+                // height: 80,
+                height: 120,
                 useContentSize: true,
                 autoHideMenuBar: true,
                 minimizable: false,

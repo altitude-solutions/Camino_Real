@@ -327,6 +327,20 @@ document.getElementById('firstTab').addEventListener('click', () => {
         if (document.getElementById('responseInfo').children.length >= 2) {
             document.getElementById('responseInfo').removeChild(document.getElementById('responseInfo').lastChild);
         }
+        clientResponse.removeAttribute('disabled');
+        nextContactDate.removeAttribute('disabled');
+        checkInDate.removeAttribute('disabled');
+        checkOutDate.removeAttribute('disabled');
+        roomsQuantity.removeAttribute('disabled');
+        whoIsInCharge.removeAttribute('disabled');
+        phoneNumber.removeAttribute('disabled');
+        personEmail.removeAttribute('disabled');
+        additionalInfo.removeAttribute('disabled');
+
+
+        checkInDate.setAttribute('min', `${today.getFullYear()}-${today.getMonth() + 1>=10?'':'0'}${today.getMonth() + 1}-${today.getDate()>=10?'':'0'}${today.getDate()}`);
+        checkOutDate.setAttribute('min', `${today.getFullYear()}-${today.getMonth() + 1>=10?'':'0'}${today.getMonth() + 1}-${today.getDate()>=10?'':'0'}${today.getDate()}`);
+        checkInDate.removeAttribute('max');
     });
 
     // ===============================================
@@ -375,6 +389,19 @@ document.getElementById('firstTab').addEventListener('click', () => {
         } else {
             didClientAnswer.classList.remove('is-invalid');
         }
+        if (didClientAnswer.value === '2') {
+            nextContactDate.value = `${today.getFullYear()}-${today.getMonth() + 1>=10?'':'0'}${today.getMonth() + 1}-${today.getDate()>=10?'':'0'}${today.getDate()+1 }`;
+
+            clientResponse.setAttribute('disabled', true);
+            nextContactDate.setAttribute('disabled', true);
+            checkInDate.setAttribute('disabled', true);
+            checkOutDate.setAttribute('disabled', true);
+            roomsQuantity.setAttribute('disabled', true);
+            whoIsInCharge.setAttribute('disabled', true);
+            phoneNumber.setAttribute('disabled', true);
+            personEmail.setAttribute('disabled', true);
+            additionalInfo.setAttribute('disabled', true);
+        }
     });
     // respuesta cliente
     clientResponse.addEventListener('input', () => {
@@ -385,17 +412,86 @@ document.getElementById('firstTab').addEventListener('click', () => {
         }
     });
     // Fecha de Proximo contacto
-    nextContactDate.addEventListener('input', () => {
-        if (!nextContactDate.value) {
-            nextContactDate.classList.add('is-invalid');
-        } else {
-            nextContactDate.classList.remove('is-invalid');
+    // nextContactDate.addEventListener('input', () => {
+    //     if (!nextContactDate.value) {
+    //         nextContactDate.classList.add('is-invalid');
+    //     } else {
+    //         nextContactDate.classList.remove('is-invalid');
+    //     }
+    // });
+
+    // Validate checkin and checkout dates
+    checkInDate.addEventListener('input', () => {
+        let date1, date2;
+        if (checkInDate.value) {
+            date1 = new Date(checkInDate.value);
+            date1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate(), date1.getHours() + 4, date1.getMinutes(), date1.getSeconds(), date1.getMilliseconds());
+            checkOutDate.setAttribute('min', `${date1.getFullYear()}-${date1.getMonth() + 1>=10?'':'0'}${date1.getMonth() + 1}-${date1.getDate()>=10?'':'0'}${date1.getDate()}`);
+        }
+
+        if (checkOutDate.value) {
+            date2 = new Date(checkOutDate.value);
+            date2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate(), date2.getHours() + 4, date2.getMinutes(), date2.getSeconds(), date2.getMilliseconds());
+            checkInDate.setAttribute('max', `${date2.getFullYear()}-${date2.getMonth() + 1>=10?'':'0'}${date2.getMonth() + 1}-${date2.getDate()>=10?'':'0'}${date2.getDate()}`);
         }
     });
+    checkOutDate.addEventListener('input', () => {
+        let date1, date2;
+        if (checkInDate.value) {
+            date1 = new Date(checkInDate.value);
+            date1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate(), date1.getHours() + 4, date1.getMinutes(), date1.getSeconds(), date1.getMilliseconds());
+            checkOutDate.setAttribute('min', `${date1.getFullYear()}-${date1.getMonth() + 1>=10?'':'0'}${date1.getMonth() + 1}-${date1.getDate()>=10?'':'0'}${date1.getDate()}`);
+        }
 
-    // TODO: Validate the last fields.
 
-
+        if (checkOutDate.value) {
+            date2 = new Date(checkOutDate.value);
+            date2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate(), date2.getHours() + 4, date2.getMinutes(), date2.getSeconds(), date2.getMilliseconds());
+            checkInDate.setAttribute('max', `${date2.getFullYear()}-${date2.getMonth() + 1>=10?'':'0'}${date2.getMonth() + 1}-${date2.getDate()>=10?'':'0'}${date2.getDate()}`);
+        }
+    });
+    // Validate Room quantity
+    roomsQuantity.addEventListener('input', () => {
+        if (roomsQuantity.value) {
+            if (roomsQuantity.value) {
+                if (roomsQuantity.value <= 0) {
+                    roomsQuantity.value = 1;
+                }
+            }
+        }
+    });
+    // Validate name
+    whoIsInCharge.addEventListener('input', () => {
+        if (whoIsInCharge.value) {
+            if (whoIsInCharge.value.match(/^[a-zA-Z ]{2,30}$/)) {
+                whoIsInCharge.classList.remove('is-invalid');
+            } else {
+                whoIsInCharge.classList.add('is-invalid');
+            }
+        } else {
+            whoIsInCharge.classList.remove('is-invalid');
+        }
+    });
+    // Validate phone number// TODO: todos los departamentos de bolivia
+    phoneNumber.addEventListener('input', () => {
+        if (phoneNumber.value) {
+            if (phoneNumber.value.match(/^[6-7]{1,1}[0-9]{7,7}$/) || phoneNumber.value.match(/^[2]{1}[0-9]{6,6}$/)) {
+                phoneNumber.classList.remove('is-invalid');
+            } else {
+                phoneNumber.classList.add('is-invalid');
+            }
+        }
+    });
+    // Validate email
+    personEmail.addEventListener('input', () => {
+        if (personEmail.value) {
+            if (personEmail.value.match(/^[a-zA-Z0-9_.]{1,30}[@]{1}[a-zA-Z0-9_.]{1,30}[.]{1}[a-zA-Z0-9_.]{1,10}$/)) {
+                personEmail.classList.remove('is-invalid');
+            } else {
+                personEmail.classList.add('is-invalid');
+            }
+        }
+    });
 
     // ===============================================
     // Handle accept button click event
@@ -461,7 +557,7 @@ document.getElementById('firstTab').addEventListener('click', () => {
             didClientAnswer.classList.remove('is-invalid');
         }
         // Validate response
-        if (clientResponse.value === '0') {
+        if (clientResponse.value === '0' && didClientAnswer.value !== '2') {
             clientResponse.classList.add('is-invalid');
             clientResponse.focus();
             return;
@@ -479,13 +575,50 @@ document.getElementById('firstTab').addEventListener('click', () => {
             }
         }
         // Validate next contact date
-        if (!nextContactDate.value) {
-            nextContactDate.classList.add('is-invalid');
-            nextContactDate.focus();
-            return;
-        } else {
-            nextContactDate.classList.remove('is-invalid');
-        }
+        // if (!nextContactDate.value && didClientAnswer.value !== '2') {
+        //     nextContactDate.classList.add('is-invalid');
+        //     nextContactDate.focus();
+        //     return;
+        // } else {
+        //     nextContactDate.classList.remove('is-invalid');
+        // }
+
+        // If one optional field is filled others should be filled too
+        // TODO: 
+        // checkInDate
+        // checkOutDate
+        // roomsQuantity
+
+        // whoIsInCharge
+        // phoneNumber
+        // personEmail
+        // if (checkInDate.value || checkOutDate.value || roomsQuantity.value || whoIsInCharge.value || phoneNumber.value || personEmail.value) {
+        //     if(!checkInDate.value){
+        //         checkInDate.classList.add('is-invalid');
+        //     }else{
+        //         checkInDate.classList.remove('is-invalid');
+        //     }
+
+        //     if(!checkOutDate.value){
+        //         checkOutDate.classList.add('is-invalid');
+        //     }else{
+        //         checkOutDate.classList.remove('is-invalid');
+        //     }
+
+        //     if(!roomsQuantity.value){
+        //         roomsQuantity.classList.add('is-invalid');
+        //     }else{
+        //         roomsQuantity.classList.remove('is-invalid');
+        //     }
+
+        //     if(!whoIsInCharge.value){
+        //         whoIsInCharge.classList.add('is-invalid');
+        //     }else{
+        //         whoIsInCharge.classList.remove('is-invalid');
+        //     }
+
+        // }
+        // TODO: END
 
         // Current time
         let now = new Date();
