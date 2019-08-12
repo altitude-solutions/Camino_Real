@@ -29,8 +29,8 @@ function deleteHotelDatabase() {
 // Import clients success
 // ===============================================
 ipcRenderer.on('clientListContent', (e, clientList) => {
+    clients.deleteClients();
     for (let i = 0; i < clientList.length; i++) {
-        console.log(`Código: ${clientList[i]['Cod Cliente']}, Nombre: ${clientList[i]['Cliente']}`);
         clients.addNewClient({
             name: String(clientList[i]['Cliente']),
             code: String(clientList[i]['Cod Cliente'])

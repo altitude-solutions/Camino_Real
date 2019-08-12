@@ -31,3 +31,11 @@ exports.getClientSuggestion = (token) => {
 
     return suggestion;
 }
+
+// ===============================================
+// Delte clients
+// ===============================================
+exports.deleteClients = () => {
+    this.clientList = [];
+    localStorage.setItem('clients', JSON.stringify(this.clientList));
+}

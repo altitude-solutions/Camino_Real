@@ -23,6 +23,12 @@ let menuTemplate = [{
             }
         },
         {
+            label: 'Exportar clientes',
+            click: () => {
+                ipcRenderer.send('exportClientList', JSON.parse(localStorage.getItem('clients')));
+            }
+        },
+        {
             type: 'separator'
         },
         {

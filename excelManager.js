@@ -32,7 +32,7 @@ ipcMain.on('generateReport', (e, filecontent) => {
 
     // Create excel workbook
     let wb = new excel.Workbook({
-        author: 'Microsoft Office User'
+        author: 'Altitude Solutions S.R.L.'
     });
     // Add a sheet to the workbook
     let ws = wb.addWorksheet('Base de datos');
@@ -209,6 +209,47 @@ ipcMain.on('importClientList', (e) => {
             }
         } else {
             dialog.showErrorBox('Error leyendo el archivo', `${res[0]} no es un archivo válido.\nLas extenciones aceptadas son: xlsx y xls`);
+        }
+    });
+});
+
+
+// ===============================================
+// Export client list to Excel
+// ===============================================
+ipcMain.on('exportClientList', (e, data) => {
+
+    let pathToFile = dialog.showSaveDialogSync({
+        defaultPath: app.getPath('documents'),
+        filters: [
+            { name: 'Excel', extensions: ['xlsx', 'xls'] },
+            { name: 'Todos los archivos', extensions: ['*'] }
+        ]
+    });
+
+    if (!pathToFile) return;
+    if (!pathToFile.split('.')[1]) pathToFile += '.xlsx';
+
+    // Workbook
+    let wb = new excel.Workbook({
+        author: 'Altitude Solutions S.R.L.'
+    });
+
+    let ws = wb.addWorksheet('Clientes');
+    ws.cell(1, 1).string('Cod Cliente');
+    ws.cell(1, 2).string('Nombre Cliente');
+
+    ws.column(2).setWidth(50);
+
+    for (let i = 0; i < data.length; i++) {
+        ws.cell(2 + i, 1).number(Number(data[i].code));
+        ws.cell(2 + i, 2).string(data[i].name);
+    }
+
+
+    wb.write(pathToFile, (err, stats) => {
+        if (err) {
+            dialog.showErrorBox('No se pudo generar el reporte', `${err}`);
         }
     });
 });
