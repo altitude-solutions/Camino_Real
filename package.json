@@ -1,6 +1,6 @@
 {
     "name": "hotel",
-    "version": "1.1.2",
+    "version": "1.1.3",
     "description": "Altitude-Solutions",
     "main": "main.js",
     "scripts": {

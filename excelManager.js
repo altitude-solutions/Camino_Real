@@ -78,7 +78,7 @@ ipcMain.on('generateReport', (e, filecontent) => {
         // Datos del reporte
         for (let i = 0; i < filecontent.registroContactos.length; i++) {
             ws.cell(2 + i, 1).string(filecontent.registroContactos[i].fechaDeContacto);
-            ws.cell(2 + i, 2).date(filecontent.registroContactos[i].fechaDeRegistro);
+            ws.cell(2 + i, 2).date(new Date(filecontent.registroContactos[i].fechaDeRegistro));
             ws.cell(2 + i, 3).string(filecontent.registroContactos[i].vendedor);
             ws.cell(2 + i, 4).number(Number(filecontent.registroContactos[i].codigoCliente));
             ws.cell(2 + i, 5).string(filecontent.registroContactos[i].nombreCliente);

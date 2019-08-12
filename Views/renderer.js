@@ -402,6 +402,19 @@ document.getElementById('firstTab').addEventListener('click', () => {
             personEmail.setAttribute('disabled', true);
             additionalInfo.setAttribute('disabled', true);
         }
+        if (didClientAnswer.value === '1') {
+            nextContactDate.value = '';
+
+            clientResponse.removeAttribute('disabled');
+            nextContactDate.removeAttribute('disabled');
+            checkInDate.removeAttribute('disabled');
+            checkOutDate.removeAttribute('disabled');
+            roomsQuantity.removeAttribute('disabled');
+            whoIsInCharge.removeAttribute('disabled');
+            phoneNumber.removeAttribute('disabled');
+            personEmail.removeAttribute('disabled');
+            additionalInfo.removeAttribute('disabled');
+        }
     });
     // respuesta cliente
     clientResponse.addEventListener('input', () => {
@@ -475,7 +488,11 @@ document.getElementById('firstTab').addEventListener('click', () => {
     // Validate phone number// TODO: todos los departamentos de bolivia
     phoneNumber.addEventListener('input', () => {
         if (phoneNumber.value) {
-            if (phoneNumber.value.match(/^[6-7]{1,1}[0-9]{7,7}$/) || phoneNumber.value.match(/^[2]{1}[0-9]{6,6}$/)) {
+            if (phoneNumber.value.match(/^[2]{1}[0-9]{6}$/) || phoneNumber.value.match(/^[3]{1}[0-9]{6}$/) || phoneNumber.value.match(/^[4]{1}[0-9]{6}$/) || phoneNumber.value.match(/^[6-7]{1}[0-9]{7}$/)) {
+                if (phoneNumber.value.match(/^[2]{1}[0-9]{6}$/)) console.log('La Paz, Oruro o Potosí');
+                if (phoneNumber.value.match(/^[3]{1}[0-9]{6}$/)) console.log('Santa Cruz, Pando o Beni');
+                if (phoneNumber.value.match(/^[4]{1}[0-9]{6}$/)) console.log('Chuquisaca Cochabamba o Tarija');
+                if (phoneNumber.value.match(/^[6-7]{1}[0-9]{7}$/)) console.log('Celular');
                 phoneNumber.classList.remove('is-invalid');
             } else {
                 phoneNumber.classList.add('is-invalid');
@@ -623,6 +640,7 @@ document.getElementById('firstTab').addEventListener('click', () => {
 
         // Current time
         let now = new Date();
+        now = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() - 4, now.getMinutes(), now.getSeconds(), now.getMilliseconds());
         let inputObject;
         // ===============================================
         // If other response is selected add this to the object if not skip it

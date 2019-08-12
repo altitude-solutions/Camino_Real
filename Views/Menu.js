@@ -9,7 +9,7 @@ let menuTemplate = [{
             accelerator: 'CmdOrCtrl+N'
         },
         {
-            label: "Generar Excel",
+            label: "Generar reporte",
             click: window.generateReport,
             accelerator: 'CmdOrCtrl+S'
         },
