@@ -21,16 +21,13 @@ exports.addNewClient = (client) => {
 // Check if tomethig matches and return possible options
 // ===============================================
 exports.getClientSuggestion = (token) => {
+    token = token.toLowerCase();
     let suggestion = [];
-    Array.from(this.clientList).forEach(client => {
-        if (client.name.toLowerCase().includes(token) || client.name.toUpperCase().includes(token)) {
-            // if (client.name.toLowerCase().includes(token) || client.name.includes(token) || client.name.toUpperCase().includes(token)) {
-            suggestion.push(client);
-        } else {
-            if (client.code.includes(token)) {
-                suggestion.push(client);
-            }
-        }
+
+    // This does the same
+    suggestion = this.clientList.filter(client => {
+        return client.name.toLowerCase().includes(token) || client.code.includes(token);
     });
+
     return suggestion;
 }

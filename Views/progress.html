@@ -10,15 +10,15 @@
 </head>
 
 <body>
-    <!-- <progress id="progressId" style="width: 100%;" value="0" max="100"></progress> -->
-    <div class="progress">
+    <progress id="progressId" style="width: 100%;" value="0" max="100"></progress>
+    <!-- <div class="progress">
         <div id="progressId" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
-    </div>
+    </div> -->
 
-    <script>
+    <!-- <script>
         window.$ = window.jQuery = require('jquery');
         window.Bootstrap = require('bootstrap');
-    </script>
+    </script> -->
 
     <script>
         const {
@@ -26,8 +26,9 @@
         } = require('electron');
         setInterval(() => {
             let progress = ipcRenderer.sendSync('download-progress-request');
-            document.getElementById('progressId').style = `width: ${progress}%;`;
-            document.getElementById('progressId').innerText = `${progress}%`;
+            document.getElementById('progressId').value = progress;
+            // document.getElementById('progressId').style = `width: ${progress}%;`;
+            // document.getElementById('progressId').innerText = `${progress}%`;
         }, 1000);
     </script>
 </body>

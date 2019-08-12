@@ -393,6 +393,8 @@ document.getElementById('firstTab').addEventListener('click', () => {
         }
     });
 
+    // TODO: Validate the last fields.
+
 
 
     // ===============================================
@@ -563,7 +565,7 @@ document.getElementById('firstTab').addEventListener('click', () => {
                 clientSuggestionList.removeChild(clientSuggestionList.firstChild);
             }
             // Fill datalist DOM with new suggestions
-            for (let i = 0; i < suggestions.length; i++) {
+            for (let i = 0; i < suggestions.length && i < 8; i++) {
                 let opt = document.createElement('option');
                 opt.value = `${suggestions[i].code}: ${suggestions[i].name}`;
                 clientSuggestionList.appendChild(opt);
