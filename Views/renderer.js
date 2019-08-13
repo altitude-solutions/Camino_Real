@@ -83,6 +83,11 @@ require('./newClientModal');
 let container = $('#content');
 
 // ===============================================
+// Last index being edited
+// ===============================================
+let lastRecord;
+
+// ===============================================
 // First tab config
 // ===============================================
 document.getElementById('firstTab').addEventListener('click', () => {
@@ -239,7 +244,7 @@ document.getElementById('firstTab').addEventListener('click', () => {
     html += '                    <div class="input-group-prepend">';
     html += '                        <span class="input-group-text">Otros</span>';
     html += '                    </div>';
-    html += '                    <textarea id="additionalInfo" class="form-control" rows="4" aria-label="Otros"></textarea>';
+    html += '                    <textarea id="additionalInfo" class="form-control" rows="2" aria-label="Otros"></textarea>';
     html += '                </div>';
     html += '            </div>';
     html += '        </div>';
@@ -249,11 +254,12 @@ document.getElementById('firstTab').addEventListener('click', () => {
     html += '            <div class="input-group-prepend">';
     html += '                <span class="input-group-text">Comentarios</span>';
     html += '            </div>';
-    html += '            <textarea id="comentariosGenerales" class="form-control" rows="6" aria-label="Otros"></textarea>';
+    html += '            <textarea id="comentariosGenerales" class="form-control" rows="2" aria-label="Otros"></textarea>';
     html += '        </div>   ';
     html += '    </div>';
     html += '    <div class="col-12 d-flex justify-content-end mt-4">';
     html += '        <button class="btn btn-dark mr-3" id="cancelButton">Cancelar</button>';
+    html += '        <button class="btn btn-dark mr-3" id="undoButton">Volver</button>';
     html += '        <button class="btn btn-dark" id="saveButton">Guardar</button>';
     html += '    </div>';
     html += '</div>';
@@ -289,6 +295,7 @@ document.getElementById('firstTab').addEventListener('click', () => {
     let comentariosGenerales = document.getElementById('comentariosGenerales');
     // Control buttons
     let cancelButton = document.getElementById('cancelButton');
+    let undoButton = document.getElementById('undoButton');
     let saveButton = document.getElementById('saveButton');
 
     // ===============================================
@@ -363,6 +370,9 @@ document.getElementById('firstTab').addEventListener('click', () => {
         checkInDate.setAttribute('min', `${today.getFullYear()}-${today.getMonth() + 1>=10?'':'0'}${today.getMonth() + 1}-${today.getDate()>=10?'':'0'}${today.getDate()}`);
         checkOutDate.setAttribute('min', `${today.getFullYear()}-${today.getMonth() + 1>=10?'':'0'}${today.getMonth() + 1}-${today.getDate()>=10?'':'0'}${today.getDate()}`);
         checkInDate.removeAttribute('max');
+
+        // Clear lastRecord
+        lastRecord = null;
     });
 
     // ===============================================
@@ -534,6 +544,69 @@ document.getElementById('firstTab').addEventListener('click', () => {
             }
         }
     });
+
+    // ===============================================
+    // Handle undo button click event
+    // In case the user missed something in the last record he/she may fix it.
+    // Note: Only works in the las record since the app started
+    // ===============================================
+    undoButton.addEventListener('click', () => {
+        let recordToModify = contacts.getLast();
+        lastRecord = recordToModify.index;
+
+        if (recordToModify.contact.fechaDeContacto) {
+            datePicker.value = recordToModify.contact.fechaDeContacto;
+        }
+        if (recordToModify.contact.vendedor) {
+            sellerName.value = recordToModify.contact.vendedor;
+        }
+        if (recordToModify.contact.nombreCliente) {
+            clientName.value = `${recordToModify.contact.codigoCliente}: ${recordToModify.contact.nombreCliente}`;
+        }
+        if (recordToModify.contact.clienteActivo) {
+            clientStatus.value = recordToModify.contact.clienteActivo;
+        }
+        if (recordToModify.contact.motivo) {
+            contactReason.value = recordToModify.contact.motivo;
+        }
+        if (recordToModify.contact.contesta) {
+            didClientAnswer.value = recordToModify.contact.contesta;
+        }
+        if (recordToModify.contact.respuesta) {
+            clientResponse.value = recordToModify.contact.respuesta;
+        }
+        if (recordToModify.contact.fechaDeEntrada) {
+            checkInDate.value = recordToModify.contact.fechaDeEntrada;
+        }
+        if (recordToModify.contact.fechaDeSalida) {
+            checkOutDate.value = recordToModify.contact.fechaDeSalida;
+        }
+        if (recordToModify.contact.cuartos) {
+            roomsQuantity.value = recordToModify.contact.cuartos;
+        }
+        if (recordToModify.contact.personaACargo) {
+            whoIsInCharge.value = recordToModify.contact.personaACargo;
+        }
+        if (recordToModify.contact.numeroTelefonico) {
+            phoneNumber.value = recordToModify.contact.numeroTelefonico;
+        }
+        if (recordToModify.contact.personaemail) {
+            personEmail.value = recordToModify.contact.personaemail;
+        }
+        if (recordToModify.contact.informaicionAdicional) {
+            additionalInfo.value = recordToModify.contact.informaicionAdicional;
+        }
+        if (recordToModify.contact.comentarios) {
+            comentariosGenerales.value = recordToModify.contact.comentarios;
+        }
+        if (recordToModify.contact.fechaProximoContacto) {
+            nextContactDate.value = recordToModify.contact.fechaProximoContacto;
+        }
+        if (recordToModify.contact.tipoDeContacto) {
+            contactType.value = recordToModify.contact.tipoDeContacto;
+        }
+    });
+
 
     // ===============================================
     // Handle accept button click event
@@ -725,7 +798,11 @@ document.getElementById('firstTab').addEventListener('click', () => {
                 entregado: false
             });
         }
-        contacts.addContact(inputObject);
+        if (lastRecord) {
+            contacts.updateContact(lastRecord, inputObject)
+        } else {
+            contacts.addContact(inputObject);
+        }
         cancelButton.click();
     });
 
@@ -800,7 +877,7 @@ document.getElementById('secondTab').addEventListener('click', () => {
         html += `                <td>${pending[i].vendedor}</td>`;
         html += '                <td>';
         html += '                    <div class="form-group form-check">';
-        html += `                        <input type="checkbox" class="form-check-input" id="task-done-${i}">`;
+        html += `                        <input type="checkbox" class="form-check-input" ${pending[i].entregado? 'checked disabled': ''}" id="task-done-${i}">`;
         html += `                        <label class="form-check-label" for="task-done-${i}">Completado</label>`;
         html += '                    </div>';
         html += '                </td>';

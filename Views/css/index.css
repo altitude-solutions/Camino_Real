@@ -1,7 +1,12 @@
 body {
     user-select: none;
+    background-color: #eeeff1;
 }
 
 [type="date"]::-webkit-inner-spin-button {
     display: none;
+}
+
+.input-group-text {
+    background-color: #dddddd;
 }

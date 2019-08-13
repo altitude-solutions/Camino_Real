@@ -20,10 +20,11 @@ exports.addNewTask = (task) => {
 // Get uncompleted tasks
 // ===============================================
 exports.getTaskstoDo = () => {
-    let todo = this.taskList.filter(task => {
-        return task.entregado === false;
-    });
-    return todo;
+    // let todo = this.taskList.filter(task => {
+    //     return task.entregado === false;
+    // });
+    // return todo;
+    return this.taskList;
 };
 
 // ===============================================
