@@ -38,16 +38,25 @@ ipcMain.on('generateReport', (e, filecontent) => {
     let ws = wb.addWorksheet('Base de datos');
     let ws2 = wb.addWorksheet('Registro de acciones');
 
-    let pathToFile = dialog.showSaveDialogSync({
-        defaultPath: app.getPath('documents'),
-        filters: [
-            { name: 'Excel', extensions: ['xlsx', 'xls'] },
-            { name: 'Todos los archivos', extensions: ['*'] }
-        ]
-    });
 
-    if (!pathToFile) return;
-    if (!pathToFile.split('.')[1]) pathToFile += '.xlsx';
+    // Check if is 'save' or 'save as'
+    let pathToFile;
+    if (filecontent.lastPathToFile) {
+        pathToFile = filecontent.lastPathToFile
+    } else {
+        pathToFile = dialog.showSaveDialogSync({
+            defaultPath: app.getPath('documents'),
+            filters: [
+                { name: 'Excel', extensions: ['xlsx', 'xls'] },
+                { name: 'Todos los archivos', extensions: ['*'] }
+            ]
+        });
+        if (!pathToFile) return;
+        if (!pathToFile.split('.')[1]) pathToFile += '.xlsx';
+
+        e.sender.send('setLastPathToFile', { lastPathToFile: pathToFile });
+    }
+
 
     // ===============================================
     // Start 'Base de datos spreadsheet'
@@ -77,7 +86,11 @@ ipcMain.on('generateReport', (e, filecontent) => {
     if (filecontent.registroContactos[0]) {
         // Datos del reporte
         for (let i = 0; i < filecontent.registroContactos.length; i++) {
-            ws.cell(2 + i, 1).string(filecontent.registroContactos[i].fechaDeContacto);
+            if (filecontent.registroContactos[i].fechaDeContacto) {
+                ws.cell(2 + i, 1).string(filecontent.registroContactos[i].fechaDeContacto);
+            } else {
+                ws.cell(2 + i, 1).number(0);
+            }
             ws.cell(2 + i, 2).date(new Date(filecontent.registroContactos[i].fechaDeRegistro));
             ws.cell(2 + i, 3).string(filecontent.registroContactos[i].vendedor);
             ws.cell(2 + i, 4).number(Number(filecontent.registroContactos[i].codigoCliente));
@@ -95,12 +108,12 @@ ipcMain.on('generateReport', (e, filecontent) => {
             if (filecontent.registroContactos[i].fechaDeEntrada) {
                 ws.cell(2 + i, 12).string(filecontent.registroContactos[i].fechaDeEntrada);
             } else {
-                ws.cell(2 + i, 12).string('-');
+                ws.cell(2 + i, 12).number(0);
             }
             if (filecontent.registroContactos[i].fechaDeSalida) {
                 ws.cell(2 + i, 13).string(filecontent.registroContactos[i].fechaDeSalida);
             } else {
-                ws.cell(2 + i, 13).string('-');
+                ws.cell(2 + i, 13).number(0);
             }
             if (filecontent.registroContactos[i].cuartos) {
                 ws.cell(2 + i, 14).number(Number(filecontent.registroContactos[i].cuartos));
@@ -130,7 +143,7 @@ ipcMain.on('generateReport', (e, filecontent) => {
             if (filecontent.registroContactos[i].fechaProximoContacto) {
                 ws.cell(2 + i, 19).string(filecontent.registroContactos[i].fechaProximoContacto);
             } else {
-                ws.cell(2 + i, 19).string('-');
+                ws.cell(2 + i, 19).number(0);
             }
             if (filecontent.registroContactos[i].comentarios) {
                 ws.cell(2 + i, 20).string(filecontent.registroContactos[i].comentarios);
@@ -152,12 +165,36 @@ ipcMain.on('generateReport', (e, filecontent) => {
 
         // Data
         for (let i = 0; i < filecontent.registroAcciones.length; i++) {
-            ws2.cell(2 + i, 1).date(new Date(filecontent.registroAcciones[i].fechaDeCreacion));
-            ws2.cell(2 + i, 2).date(new Date(filecontent.registroAcciones[i].fechaLimite));
-            ws2.cell(2 + i, 3).string(filecontent.registroAcciones[i].cliente.split(': ')[1]);
-            ws2.cell(2 + i, 4).string(listaRespuesta[Number(filecontent.registroAcciones[i].pedido)]);
-            ws2.cell(2 + i, 5).string(filecontent.registroAcciones[i].vendedor);
-            ws2.cell(2 + i, 6).string(filecontent.registroAcciones[i].entregado == '0' ? 'Pendiente' : 'Entregado');
+            if (filecontent.registroAcciones[i].fechaDeCreacion) {
+                ws2.cell(2 + i, 1).date(new Date(filecontent.registroAcciones[i].fechaDeCreacion));
+            } else {
+                ws2.cell(2 + i, 1).number(0);
+            }
+            if (filecontent.registroAcciones[i].fechaLimite) {
+                ws2.cell(2 + i, 2).date(new Date(filecontent.registroAcciones[i].fechaLimite));
+            } else {
+                ws2.cell(2 + i, 2).number(0);
+            }
+            if (filecontent.registroAcciones[i].cliente) {
+                ws2.cell(2 + i, 3).string(filecontent.registroAcciones[i].cliente.split(': ')[1]);
+            } else {
+                ws2.cell(2 + i, 3).string('-');
+            }
+            if (filecontent.registroAcciones[i].pedido) {
+                ws2.cell(2 + i, 4).string(listaRespuesta[Number(filecontent.registroAcciones[i].pedido)]);
+            } else {
+                ws2.cell(2 + i, 4).string('-');
+            }
+            if (filecontent.registroAcciones[i].vendedor) {
+                ws2.cell(2 + i, 5).string(filecontent.registroAcciones[i].vendedor);
+            } else {
+                ws2.cell(2 + i, 5).string('-');
+            }
+            if (filecontent.registroAcciones[i].entregado) {
+                ws2.cell(2 + i, 6).string(filecontent.registroAcciones[i].entregado == '0' ? 'Pendiente' : 'Entregado');
+            } else {
+                ws2.cell(2 + i, 6).string('-');
+            }
         }
 
 
@@ -165,12 +202,6 @@ ipcMain.on('generateReport', (e, filecontent) => {
         // Save File to selected path
         // ===============================================
         wb.write(pathToFile, (err, stats) => {
-            if (err) {
-                dialog.showErrorBox('No se pudo generar el reporte', `${err}`);
-            }
-        });
-
-        wb.write(path.join(app.getPath('documents'), 'Altitude Solutions-Demo.xlsx'), (err, stats) => {
             if (err) {
                 dialog.showErrorBox('No se pudo generar el reporte', `${err}`);
             }
@@ -199,6 +230,7 @@ ipcMain.on('importClientList', (e) => {
             { name: 'Todos los archivos', extensions: ['*'] }
         ]
     }, (res) => {
+        if (!res[0]) return;
         if (res[0].split('.')[res[0].split('.').length - 1] === 'xlsx' || res[0].split('.')[res[0].split('.').length - 1] === 'xls') {
             let workbook = excelWriter.readFile(res[0]);
             if (workbook.SheetNames.includes('Categoria PowerBI')) {

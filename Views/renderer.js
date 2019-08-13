@@ -40,14 +40,36 @@ ipcRenderer.on('clientListContent', (e, clientList) => {
 
 
 // ===============================================
-// Generate report in EXCEL for showing in POWER BI
+// Generate report in EXCEL at last location, if none ask
 // ===============================================
 window.generateReport = () => {
+    let lastPathToFile = sessionStorage.getItem('lastPathToFile');
     ipcRenderer.send('generateReport', {
         registroContactos: contacts.storage,
-        registroAcciones: tasks.taskList
+        registroAcciones: tasks.taskList,
+        lastPathToFile
     });
 };
+
+// ===============================================
+// Generate report in EXCEL at a custom location
+// ===============================================
+window.generateReportAs = () => {
+    ipcRenderer.send('generateReport', {
+        registroContactos: contacts.storage,
+        registroAcciones: tasks.taskList,
+        lastPathToFile: null
+    });
+}
+
+// ===============================================
+// Set last path to file
+// ===============================================
+ipcRenderer.on('setLastPathToFile', (e, response) => {
+    if (response.lastPathToFile) {
+        sessionStorage.setItem('lastPathToFile', response.lastPathToFile);
+    }
+});
 
 
 // ===============================================
@@ -474,31 +496,33 @@ document.getElementById('firstTab').addEventListener('click', () => {
         }
     });
     // Validate name
-    whoIsInCharge.addEventListener('input', () => {
-        if (whoIsInCharge.value) {
-            if (whoIsInCharge.value.match(/^[a-zA-Z ]{2,30}$/)) {
-                whoIsInCharge.classList.remove('is-invalid');
-            } else {
-                whoIsInCharge.classList.add('is-invalid');
-            }
-        } else {
-            whoIsInCharge.classList.remove('is-invalid');
-        }
-    });
-    // Validate phone number// TODO: todos los departamentos de bolivia
-    phoneNumber.addEventListener('input', () => {
-        if (phoneNumber.value) {
-            if (phoneNumber.value.match(/^[2]{1}[0-9]{6}$/) || phoneNumber.value.match(/^[3]{1}[0-9]{6}$/) || phoneNumber.value.match(/^[4]{1}[0-9]{6}$/) || phoneNumber.value.match(/^[6-7]{1}[0-9]{7}$/)) {
-                if (phoneNumber.value.match(/^[2]{1}[0-9]{6}$/)) console.log('La Paz, Oruro o Potosí');
-                if (phoneNumber.value.match(/^[3]{1}[0-9]{6}$/)) console.log('Santa Cruz, Pando o Beni');
-                if (phoneNumber.value.match(/^[4]{1}[0-9]{6}$/)) console.log('Chuquisaca Cochabamba o Tarija');
-                if (phoneNumber.value.match(/^[6-7]{1}[0-9]{7}$/)) console.log('Celular');
-                phoneNumber.classList.remove('is-invalid');
-            } else {
-                phoneNumber.classList.add('is-invalid');
-            }
-        }
-    });
+    // whoIsInCharge.addEventListener('input', () => {
+    //     if (whoIsInCharge.value) {
+    //         if (whoIsInCharge.value.match(/^[a-zA-Z ]{2,30}$/)) {
+    //             whoIsInCharge.classList.remove('is-invalid');
+    //         } else {
+    //             whoIsInCharge.classList.add('is-invalid');
+    //         }
+    //     } else {
+    //         whoIsInCharge.classList.remove('is-invalid');
+    //     }
+    // });
+
+    // Validate phone number//
+    // phoneNumber.addEventListener('input', () => {
+    //     if (phoneNumber.value) {
+    //         if (phoneNumber.value.match(/^[2]{1}[0-9]{6}$/) || phoneNumber.value.match(/^[3]{1}[0-9]{6}$/) || phoneNumber.value.match(/^[4]{1}[0-9]{6}$/) || phoneNumber.value.match(/^[6-7]{1}[0-9]{7}$/)) {
+    //             if (phoneNumber.value.match(/^[2]{1}[0-9]{6}$/)) console.log('La Paz, Oruro o Potosí');
+    //             if (phoneNumber.value.match(/^[3]{1}[0-9]{6}$/)) console.log('Santa Cruz, Pando o Beni');
+    //             if (phoneNumber.value.match(/^[4]{1}[0-9]{6}$/)) console.log('Chuquisaca Cochabamba o Tarija');
+    //             if (phoneNumber.value.match(/^[6-7]{1}[0-9]{7}$/)) console.log('Celular');
+    //             phoneNumber.classList.remove('is-invalid');
+    //         } else {
+    //             phoneNumber.classList.add('is-invalid');
+    //         }
+    //     }
+    // });
+
     // Validate email
     personEmail.addEventListener('input', () => {
         if (personEmail.value) {
