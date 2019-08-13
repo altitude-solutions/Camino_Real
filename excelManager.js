@@ -106,12 +106,20 @@ ipcMain.on('generateReport', (e, filecontent) => {
                 ws.cell(2 + i, 11).string('-');
             }
             if (filecontent.registroContactos[i].fechaDeEntrada) {
-                ws.cell(2 + i, 12).string(filecontent.registroContactos[i].fechaDeEntrada);
+                try {
+                    ws.cell(2 + i, 12).string(filecontent.registroContactos[i].fechaDeEntrada);
+                } catch (error) {
+                    ws.cell(2 + i, 12).number(0);
+                }
             } else {
                 ws.cell(2 + i, 12).number(0);
             }
             if (filecontent.registroContactos[i].fechaDeSalida) {
-                ws.cell(2 + i, 13).string(filecontent.registroContactos[i].fechaDeSalida);
+                try {
+                    ws.cell(2 + i, 13).string(filecontent.registroContactos[i].fechaDeSalida);
+                } catch (error) {
+                    ws.cell(2 + i, 13).number(0);
+                }
             } else {
                 ws.cell(2 + i, 13).number(0);
             }
@@ -141,7 +149,11 @@ ipcMain.on('generateReport', (e, filecontent) => {
                 ws.cell(2 + i, 18).string('-');
             }
             if (filecontent.registroContactos[i].fechaProximoContacto) {
-                ws.cell(2 + i, 19).string(filecontent.registroContactos[i].fechaProximoContacto);
+                try {
+                    ws.cell(2 + i, 19).string(filecontent.registroContactos[i].fechaProximoContacto);
+                } catch (error) {
+                    ws.cell(2 + i, 19).number(0);
+                }
             } else {
                 ws.cell(2 + i, 19).number(0);
             }
@@ -166,12 +178,20 @@ ipcMain.on('generateReport', (e, filecontent) => {
         // Data
         for (let i = 0; i < filecontent.registroAcciones.length; i++) {
             if (filecontent.registroAcciones[i].fechaDeCreacion) {
-                ws2.cell(2 + i, 1).date(new Date(filecontent.registroAcciones[i].fechaDeCreacion));
+                try {
+                    ws2.cell(2 + i, 1).date(new Date(filecontent.registroAcciones[i].fechaDeCreacion));
+                } catch (error) {
+                    ws2.cell(2 + i, 1).number(0);
+                }
             } else {
                 ws2.cell(2 + i, 1).number(0);
             }
             if (filecontent.registroAcciones[i].fechaLimite) {
-                ws2.cell(2 + i, 2).date(new Date(filecontent.registroAcciones[i].fechaLimite));
+                try {
+                    ws2.cell(2 + i, 2).date(new Date(filecontent.registroAcciones[i].fechaLimite));
+                } catch (error) {
+                    ws2.cell(2 + i, 2).number(0);
+                }
             } else {
                 ws2.cell(2 + i, 2).number(0);
             }
@@ -190,10 +210,10 @@ ipcMain.on('generateReport', (e, filecontent) => {
             } else {
                 ws2.cell(2 + i, 5).string('-');
             }
-            if (filecontent.registroAcciones[i].entregado) {
+            if (filecontent.registroAcciones[i].entregado === false || filecontent.registroAcciones[i].entregado === true) {
                 ws2.cell(2 + i, 6).string(filecontent.registroAcciones[i].entregado == '0' ? 'Pendiente' : 'Entregado');
             } else {
-                ws2.cell(2 + i, 6).string('-');
+                ws2.cell(2 + i, 6).string('Pendiente');
             }
         }
 

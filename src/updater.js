@@ -64,7 +64,7 @@ exports.check = () => {
                 e.returnValue = downloadProgress;
             });
 
-            autoUpdater.on('dowload-progress', (d) => {
+            autoUpdater.on('download-progress', (d) => {
                 downloadProgress = d.percent;
             });
 
