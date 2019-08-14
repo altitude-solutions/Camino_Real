@@ -1,6 +1,11 @@
 body {
     user-select: none;
-    background-color: #eeeff1;
+    background: url(../img/Picture1.png) no-repeat;
+    /* background: url(../img/84684760.jpg) no-repeat; */
+    background-size: cover;
+    /* -webkit-mask-image: linear-gradient( to bottom, tansparent 25%, black 90%); */
+    /* mask-image: linear-gradient( to bottom, tansparent 25%, black 90%); */
+    /* background-color: #eeeff1; */
 }
 
 [type="date"]::-webkit-inner-spin-button {

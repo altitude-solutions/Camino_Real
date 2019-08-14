@@ -1,5 +1,6 @@
 const { autoUpdater } = require('electron-updater');
 const { dialog, BrowserWindow, ipcMain } = require('electron');
+const path = require('path');
 
 // ===============================================
 // Disble autodownload
@@ -45,26 +46,30 @@ exports.check = () => {
             // ===============================================
             let progressWin = new BrowserWindow({
                 width: 350,
-                // height: 80,
-                height: 120,
+                height: 40,
                 useContentSize: true,
                 autoHideMenuBar: true,
                 minimizable: false,
                 fullscreen: false,
                 fullscreenable: false,
-                resizable: false
+                resizable: false,
+                webPreferences: {
+                    nodeIntegration: true
+                }
             });
 
-            progressWin.loadURL(`file://${__dirname}/Views/progress.html`);
+            progressWin.loadFile(path.resolve('../', 'Views/progress.html'));
             progressWin.on('close', () => {
                 progressWin = null;
             });
 
             ipcMain.on('download-progress-request', (e) => {
                 e.returnValue = downloadProgress;
+                console.log('\t\t\tProgress: ', downloadProgress);
             });
 
             autoUpdater.on('download-progress', (d) => {
+                console.log(`\t\t\t\tPercent: ${d.percent}`);
                 downloadProgress = d.percent;
             });
 

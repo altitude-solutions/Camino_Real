@@ -10,24 +10,38 @@
 </head>
 
 <body>
-    <progress id="progressId" style="width: 100%;" value="0" max="100"></progress>
+    <!-- <p id="progressPercentage">0%</p>
+    <progress id="progressId" style="width: 100%;" value="0" max="100"></progress> -->
+
+    <p id="progressPercentage">Actualizando</p>
+
     <!-- <div class="progress">
         <div id="progressId" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
     </div> -->
 
-    <!-- <script>
+    <script>
         window.$ = window.jQuery = require('jquery');
         window.Bootstrap = require('bootstrap');
-    </script> -->
+    </script>
 
     <script>
         const {
             ipcRenderer
         } = require('electron');
+
+        let acutal = ['Actualizando', 'Actualizando.', 'Actualizando..', 'Actualizando...'];
+        let acutalindex = 0;
         setInterval(() => {
             let progress = ipcRenderer.sendSync('download-progress-request');
-            document.getElementById('progressId').value = progress;
-            progress++;
+            // document.getElementById('progressId').value = progress;
+            // document.getElementById('progressPercentage').innerText = `${progress}%`;
+            document.getElementById('progressPercentage').innerText = `${acutal[acutalindex]}`;
+            if (acutalindex < 3) {
+                acutalindex++;
+            } else {
+                acutalindex = 0;
+            }
+
             // document.getElementById('progressId').style = `width: ${progress}%;`;
             // document.getElementById('progressId').innerText = `${progress}%`;
         }, 1000);

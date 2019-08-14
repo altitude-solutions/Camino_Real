@@ -98,6 +98,11 @@ document.getElementById('firstTab').addEventListener('click', () => {
     document.getElementById('secondTab').classList.remove('active');
     document.getElementById('firstTab').classList.add('active');
 
+    document.getElementById('secondTab').classList.remove('text-dark');
+    document.getElementById('firstTab').classList.remove('text-light');
+    document.getElementById('secondTab').classList.add('text-light');
+    document.getElementById('firstTab').classList.add('text-dark');
+
     // ===============================================
     // Create and show first tab
     // ===============================================
@@ -858,11 +863,16 @@ document.getElementById('secondTab').addEventListener('click', () => {
     document.getElementById('firstTab').classList.remove('active');
     document.getElementById('secondTab').classList.add('active');
 
+    document.getElementById('firstTab').classList.remove('text-dark');
+    document.getElementById('secondTab').classList.remove('text-light');
+    document.getElementById('firstTab').classList.add('text-light');
+    document.getElementById('secondTab').classList.add('text-dark');
+
     // ===============================================
     // Create and show second tab
     // ===============================================
     let html = '';
-    html += '    <table class="table">';
+    html += '    <table class="table text-light">';
     html += '        <thead>';
     html += '            <tr>';
     html += '                <th scope="col">#</th>';

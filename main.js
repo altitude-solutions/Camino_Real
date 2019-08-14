@@ -8,7 +8,7 @@ const windowState = require('electron-window-state');
 // ===============================================
 // Run excel config
 // ===============================================
-require('./excelManager');
+require('./src/excelManager');
 
 
 // ===============================================
