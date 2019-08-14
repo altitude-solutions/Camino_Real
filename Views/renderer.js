@@ -86,6 +86,7 @@ let container = $('#content');
 // Last index being edited
 // ===============================================
 let lastRecord;
+let lastSellerName;
 
 // ===============================================
 // First tab config
@@ -106,7 +107,7 @@ document.getElementById('firstTab').addEventListener('click', () => {
     html += '        <h3 class="text-justify">Información general</h3>';
     html += '        <div class="input-group mb-3">';
     html += '            <div class="input-group-prepend">';
-    html += '                <span class="input-group-text" id="saleDate">Fecha</span>';
+    html += '                <span class="input-group-text">Fecha</span>';
     html += '            </div>';
     html += '            <input id="datePicker" type="date" class="form-control" placeholder="Fecha" aria-label="Fecha" aria-describedby="saleDate">';
     html += '        </div>';
@@ -306,6 +307,12 @@ document.getElementById('firstTab').addEventListener('click', () => {
     checkInDate.setAttribute('min', `${today.getFullYear()}-${today.getMonth() + 1>=10?'':'0'}${today.getMonth() + 1}-${today.getDate()>=10?'':'0'}${today.getDate()}`);
     checkOutDate.setAttribute('min', `${today.getFullYear()}-${today.getMonth() + 1>=10?'':'0'}${today.getMonth() + 1}-${today.getDate()>=10?'':'0'}${today.getDate()}`);
     nextContactDate.setAttribute('min', `${today.getFullYear()}-${today.getMonth() + 1>=10?'':'0'}${today.getMonth() + 1}-${today.getDate()>=10?'':'0'}${today.getDate()}`);
+    // ===============================================
+    // Set seller name if existes
+    // ===============================================
+    if (lastSellerName) {
+        sellerName.value = lastSellerName;
+    }
 
     // ===============================================
     // Handle other client response, create or remove otherResponse field
@@ -385,6 +392,7 @@ document.getElementById('firstTab').addEventListener('click', () => {
     // Seller name
     sellerName.addEventListener('input', () => {
         sellerName.classList.remove('is-invalid');
+        lastSellerName = sellerName.value;
     });
     // client name
     clientName.addEventListener('input', () => {
@@ -871,7 +879,7 @@ document.getElementById('secondTab').addEventListener('click', () => {
         html += '            <tr>';
         html += `                <th scope="row">${i+1}</th>`;
         html += `                <td>${new Date(pending[i].fechaDeCreacion).toLocaleDateString()}</td>`;
-        html += `                <td>${new Date(pending[i].fechaLimite).toLocaleDateString()}</td>`;
+        html += `                <td>${pending[i].fechaLimite? (new Date(pending[i].fechaLimite).toLocaleDateString() !== 'Invalid Date'? new Date(pending[i].fechaLimite).toLocaleDateString() : '-' ): '-'}</td>`;
         html += `                <td>${pending[i].cliente.split(': ')[1]}</td>`;
         html += `                <td>${listaRespuesta[ Number( pending[i].pedido) ]}</td>`;
         html += `                <td>${pending[i].vendedor}</td>`;
