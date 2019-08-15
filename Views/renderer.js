@@ -38,6 +38,55 @@ ipcRenderer.on('clientListContent', (e, clientList) => {
     }
 });
 
+// ===============================================
+// Import register success
+// ===============================================
+ipcRenderer.on('reportImportSuccess', (e, reportContent) => {
+    for (let i = 0; i < reportContent.dataBase.length; i++) {
+
+        let now = new Date();
+        now = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() - 4, now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+
+        let inputObject = {
+            fechaDeContacto: reportContent.dataBase[i]['Fecha de Contacto'],
+            fechaDeRegistro: now,
+            vendedor: reportContent.dataBase[i]['Vendedor'],
+            codigoCliente: reportContent.dataBase[i]['Código Cliente'],
+            nombreCliente: reportContent.dataBase[i]['Nombre Cliente'],
+            clienteActivo: reportContent.dataBase[i]['Cliente Activo'] === 'Si' ? '1' : '2',
+            motivo: reportContent.dataBase[i]['Motivo'] === 'Primer contacto' ? '1' : (reportContent.dataBase[i]['Motivo'] === 'Seguimiento específico' ? '2' : (reportContent.dataBase[i]['Motivo'] === 'Seguimiento a tarifario entregado' ? '3' : (reportContent.dataBase[i]['Motivo'] === 'Seguimiento a propuesta entregada' ? '4' : (reportContent.dataBase[i]['Motivo'] === 'LEAD' ? '5' : '6')))),
+            contesta: reportContent.dataBase[i]['Contesta'] === 'Si' ? '1' : '2',
+            respuesta: reportContent.dataBase[i]['Respuesta'] === 'Tarifario' ? '1' : (reportContent.dataBase[i]['Respuesta'] === 'Primera propuesta' ? '2' : (reportContent.dataBase[i]['Respuesta'] === 'Nueva propuesta' ? '3' : (reportContent.dataBase[i]['Respuesta'] === 'Reserva' ? '4' : (reportContent.dataBase[i]['Respuesta'] === 'No le interesa' ? '5' : (reportContent.dataBase[i]['Respuesta'] === 'Otros' ? '7' : '6'))))),
+            otraRespuesta: reportContent.dataBase[i]['Respuesta Otro'] !== '-' ? reportContent.dataBase[i]['Respuesta Otro'] : '',
+            fechaDeEntrada: reportContent.dataBase[i]['Fecha de Entrada'] !== '0' ? reportContent.dataBase[i]['Fecha de Entrada'] : '',
+            fechaDeSalida: reportContent.dataBase[i]['Fecha de Salida'] !== '0' ? reportContent.dataBase[i]['Fecha de Salida'] : '',
+            cuartos: reportContent.dataBase[i]['Número de Cuartos'] !== '0' ? reportContent.dataBase[i]['Número de Cuartos'] : '',
+            personaACargo: reportContent.dataBase[i]['Persona Encargada'] !== '-' ? reportContent.dataBase[i]['Persona Encargada'] : '',
+            numeroTelefonico: reportContent.dataBase[i]['Teléfono'] !== '-' ? reportContent.dataBase[i]['Teléfono'] : '',
+            personaemail: reportContent.dataBase[i]['Email'] !== '-' ? reportContent.dataBase[i]['Email'] : '',
+            informaicionAdicional: reportContent.dataBase[i]['Información Seguimiento'] !== '-' ? reportContent.dataBase[i]['Información Seguimiento'] : '',
+            comentarios: reportContent.dataBase[i]['Comentarios'] !== '-' ? reportContent.dataBase[i]['Comentarios'] : '',
+            fechaProximoContacto: reportContent.dataBase[i]['Fecha Próximo Contacto'] !== '0' ? reportContent.dataBase[i]['Fecha Próximo Contacto'] : '',
+            tipoDeContacto: reportContent.dataBase[i]['Tipo de Contacto'] === 'Llamada' ? '1' : '2'
+        };
+        contacts.addContact(inputObject);
+    }
+
+
+    for (let i = 0; i < reportContent.taskList.length; i++) {
+        if (reportContent.taskList[i]['Solicitud'] === 'Tarifario' || reportContent.taskList[i]['Solicitud'] === 'Primera propuesta' || reportContent.taskList[i]['Solicitud'] === 'Nueva propuesta') {
+            tasks.addNewTask({
+                pedido: reportContent.taskList[i]['Solicitud'] === 'Tarifario' ? '1' : (reportContent.taskList[i]['Solicitud'] === 'Primera propuesta' ? '2' : '3'),
+                vendedor: reportContent.taskList[i]['Empleado asignado'],
+                cliente: reportContent.taskList[i]['Cliente'],
+                fechaDeCreacion: new Date(reportContent.taskList[i]['Fecha de Creación']),
+                fechaLimite: reportContent.taskList[i]['Fecha Límite'] == '0' ? '' : new Date(reportContent.taskList[i]['Fecha Límite']),
+                entregado: reportContent.taskList[i]['Completado'] === 'Entregado' ? true : false
+            });
+        }
+    }
+
+});
 
 // ===============================================
 // Generate report in EXCEL at last location, if none ask
@@ -60,7 +109,14 @@ window.generateReportAs = () => {
         registroAcciones: tasks.taskList,
         lastPathToFile: null
     });
-}
+};
+
+// ===============================================
+// Import reports from EXCEL
+// ===============================================
+window.importRegister = () => {
+    ipcRenderer.send('importReport');
+};
 
 // ===============================================
 // Set last path to file
@@ -151,7 +207,7 @@ document.getElementById('firstTab').addEventListener('click', () => {
     html += '                <option value="1">Primer contacto</option>';
     html += '                <option value="2">Seguimiento específico</option>';
     html += '                <option value="3">Seguimiento a tarifario entregado</option>';
-    html += '                <option value="4">Seguimiento a propuesta encargada</option>';
+    html += '                <option value="4">Seguimiento a propuesta entregada</option>';
     html += '                <option value="5">LEAD</option>';
     html += '                <option value="6">Contactado por cliente</option>';
     html += '            </select>';
@@ -702,52 +758,6 @@ document.getElementById('firstTab').addEventListener('click', () => {
                 document.getElementById('otherResponse').classList.remove('is-invalid');
             }
         }
-        // Validate next contact date
-        // if (!nextContactDate.value && didClientAnswer.value !== '2') {
-        //     nextContactDate.classList.add('is-invalid');
-        //     nextContactDate.focus();
-        //     return;
-        // } else {
-        //     nextContactDate.classList.remove('is-invalid');
-        // }
-
-        // If one optional field is filled others should be filled too
-        // TODO: 
-        // checkInDate
-        // checkOutDate
-        // roomsQuantity
-
-        // whoIsInCharge
-        // phoneNumber
-        // personEmail
-        // if (checkInDate.value || checkOutDate.value || roomsQuantity.value || whoIsInCharge.value || phoneNumber.value || personEmail.value) {
-        //     if(!checkInDate.value){
-        //         checkInDate.classList.add('is-invalid');
-        //     }else{
-        //         checkInDate.classList.remove('is-invalid');
-        //     }
-
-        //     if(!checkOutDate.value){
-        //         checkOutDate.classList.add('is-invalid');
-        //     }else{
-        //         checkOutDate.classList.remove('is-invalid');
-        //     }
-
-        //     if(!roomsQuantity.value){
-        //         roomsQuantity.classList.add('is-invalid');
-        //     }else{
-        //         roomsQuantity.classList.remove('is-invalid');
-        //     }
-
-        //     if(!whoIsInCharge.value){
-        //         whoIsInCharge.classList.add('is-invalid');
-        //     }else{
-        //         whoIsInCharge.classList.remove('is-invalid');
-        //     }
-
-        // }
-        // TODO: END
-
         // Current time
         let now = new Date();
         now = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() - 4, now.getMinutes(), now.getSeconds(), now.getMilliseconds());
@@ -812,7 +822,7 @@ document.getElementById('firstTab').addEventListener('click', () => {
             });
         }
         if (lastRecord) {
-            contacts.updateContact(lastRecord, inputObject)
+            contacts.updateContact(lastRecord, inputObject);
         } else {
             contacts.addContact(inputObject);
         }
@@ -890,7 +900,7 @@ document.getElementById('secondTab').addEventListener('click', () => {
         html += `                <th scope="row">${i+1}</th>`;
         html += `                <td>${new Date(pending[i].fechaDeCreacion).toLocaleDateString()}</td>`;
         html += `                <td>${pending[i].fechaLimite? (new Date(pending[i].fechaLimite).toLocaleDateString() !== 'Invalid Date'? new Date(pending[i].fechaLimite).toLocaleDateString() : '-' ): '-'}</td>`;
-        html += `                <td>${pending[i].cliente.split(': ')[1]}</td>`;
+        html += `                <td>${ pending[i].cliente.includes(':') ? pending[i].cliente.split(': ')[1] : pending[i].cliente }</td>`;
         html += `                <td>${listaRespuesta[ Number( pending[i].pedido) ]}</td>`;
         html += `                <td>${pending[i].vendedor}</td>`;
         html += '                <td>';

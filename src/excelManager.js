@@ -25,7 +25,7 @@ ipcMain.on('generateReport', (e, filecontent) => {
     // Opciones para las listas de seleccion multiple
     // ===============================================
     let listaActivo = ['', 'Si', 'No'];
-    let lsitaMotivo = ['', 'Primer contacto', 'Seguimiento específico', 'Seguimiento a tarifario entregado', 'Seguimiento a propuesta entragada', 'LEAD', 'Contactado por cliente'];
+    let lsitaMotivo = ['', 'Primer contacto', 'Seguimiento específico', 'Seguimiento a tarifario entregado', 'Seguimiento a propuesta entregada', 'LEAD', 'Contactado por cliente'];
     let listaTipoContacto = ['', 'Llamada', 'Visita'];
     let listaContesta = ['', 'Si', 'No'];
     let listaRespuesta = ['', 'Tarifario', 'Primera propuesta', 'Nueva propuesta', 'Reserva', 'No le interesa', 'No puede hablar - Volver a contactar', 'Otros'];
@@ -124,9 +124,13 @@ ipcMain.on('generateReport', (e, filecontent) => {
                 ws.cell(2 + i, 13).number(0);
             }
             if (filecontent.registroContactos[i].cuartos) {
-                ws.cell(2 + i, 14).number(Number(filecontent.registroContactos[i].cuartos));
+                try {
+                    ws.cell(2 + i, 14).number(Number(filecontent.registroContactos[i].cuartos));
+                } catch (error) {
+                    ws.cell(2 + i, 14).number(0);
+                }
             } else {
-                ws.cell(2 + i, 14).string('-');
+                ws.cell(2 + i, 14).number(0);
             }
             if (filecontent.registroContactos[i].personaACargo) {
                 ws.cell(2 + i, 15).string(filecontent.registroContactos[i].personaACargo);
@@ -196,7 +200,7 @@ ipcMain.on('generateReport', (e, filecontent) => {
                 ws2.cell(2 + i, 2).number(0);
             }
             if (filecontent.registroAcciones[i].cliente) {
-                ws2.cell(2 + i, 3).string(filecontent.registroAcciones[i].cliente.split(': ')[1]);
+                ws2.cell(2 + i, 3).string(filecontent.registroAcciones[i].cliente.includes(':') ? filecontent.registroAcciones[i].cliente.split(': ')[1] : filecontent.registroAcciones[i].cliente);
             } else {
                 ws2.cell(2 + i, 3).string('-');
             }
@@ -257,10 +261,10 @@ ipcMain.on('importClientList', (e) => {
                 // console.log(excelWriter.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[workbook.SheetNames.indexOf('Categoria PowerBI')]]));
                 e.sender.send('clientListContent', excelWriter.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[workbook.SheetNames.indexOf('Categoria PowerBI')]]));
             } else {
-                console.log('No existe');
+                dialog.showErrorBox('Error importando clientes', 'La lista de clientes debe estar en la hoja \'Categoria PowerBI\'.')
             }
         } else {
-            dialog.showErrorBox('Error leyendo el archivo', `${res[0]} no es un archivo válido.\nLas extenciones aceptadas son: xlsx y xls`);
+            dialog.showErrorBox('Error leyendo el archivo', `${res[0]} no es un archivo válido.\nLas extenciones aceptadas son: xlsx y xls.`);
         }
     });
 });
@@ -302,6 +306,37 @@ ipcMain.on('exportClientList', (e, data) => {
     wb.write(pathToFile, (err, stats) => {
         if (err) {
             dialog.showErrorBox('No se pudo generar el reporte', `${err}`);
+        }
+    });
+});
+
+// ===============================================
+// Import reports
+// ===============================================
+ipcMain.on('importReport', (e) => {
+
+    dialog.showOpenDialog({
+        properties: ['openFile'],
+        title: 'Importar registros',
+        defaultPath: app.getPath('documents'),
+        filters: [
+            { name: 'Excel', extensions: ['xlsx', 'xls'] },
+            { name: 'Todos los archivos', extensions: ['*'] }
+        ]
+    }, (res) => {
+        if (!res[0]) return;
+        if (res[0].split('.')[res[0].split('.').length - 1] === 'xlsx' || res[0].split('.')[res[0].split('.').length - 1] === 'xls') {
+            let workbook = excelWriter.readFile(res[0]);
+            if (workbook.SheetNames.includes('Base de datos') && workbook.SheetNames.includes('Registro de acciones')) {
+                e.sender.send('reportImportSuccess', {
+                    dataBase: excelWriter.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[workbook.SheetNames.indexOf('Base de datos')]]),
+                    taskList: excelWriter.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[workbook.SheetNames.indexOf('Registro de acciones')]]),
+                });
+            } else {
+                dialog.showErrorBox('Error importando registros', 'Los registros deben estar en la hoja \'Base de datos\' y el registro de acciones en la hoja \'Registro de acciones\'.');
+            }
+        } else {
+            dialog.showErrorBox('Error leyendo el archivo', `${res[0]} no es un archivo válido.\nLas extenciones aceptadas son: xlsx y xls.`);
         }
     });
 });

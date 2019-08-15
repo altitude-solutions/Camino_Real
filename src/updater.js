@@ -65,11 +65,9 @@ exports.check = () => {
 
             ipcMain.on('download-progress-request', (e) => {
                 e.returnValue = downloadProgress;
-                console.log('\t\t\tProgress: ', downloadProgress);
             });
 
             autoUpdater.on('download-progress', (d) => {
-                console.log(`\t\t\t\tPercent: ${d.percent}`);
                 downloadProgress = d.percent;
             });
 
