@@ -87,7 +87,7 @@
         "electron-updater": "^4.1.2",
         "electron-window-state": "^5.0.3",
         "excel4node": "^1.7.2",
-        "jquery": "^3.4.1",
+        "jquery": "^3.5.0",
         "popper.js": "^1.15.0",
         "xlsx": "^0.15.0"
     },
